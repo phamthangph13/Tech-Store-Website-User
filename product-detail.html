@@ -332,7 +332,11 @@
         
         .related-products {
             margin-top: 60px;
-            margin-bottom: 60px;
+            margin-bottom: 80px;
+            padding: 40px;
+            background-color: #f8f9fa;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
         
         .related-products h2 {
@@ -340,12 +344,194 @@
             margin-bottom: 40px;
             color: #2c3e50;
             font-size: 28px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .related-products h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #3498db;
+            border-radius: 2px;
         }
         
         .related-products-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 30px;
+        }
+        
+        /* Product card styles specific for related products */
+        .related-products .product-card {
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .related-products .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.15);
+        }
+        
+        .related-products .product-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .related-products .product-actions {
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .related-products .product-card:hover .product-actions {
+            opacity: 1;
+            transform: translateY(-10px);
+        }
+        
+        .related-products .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: none;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3498db;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .related-products .action-btn:hover {
+            background-color: #3498db;
+            color: #fff;
+            transform: scale(1.1);
+        }
+        
+        .related-products .tooltip {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .related-products .action-btn:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .related-products .product-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .related-products .product-category {
+            color: #fff;
+            background-color: #3498db;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: inline-block;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .related-products .product-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 44px;
+        }
+        
+        .related-products .product-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #3498db;
+        }
+        
+        .related-products .original-price {
+            text-decoration: line-through;
+            color: #95a5a6;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        
+        .related-products .discount-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1;
+        }
+        
+        .related-products .view-details {
+            margin-top: auto;
+            display: inline-block;
+            text-align: center;
+            color: #3498db;
+            text-decoration: none;
+            border: 1px solid #3498db;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .related-products .view-details:hover {
+            background-color: #3498db;
+            color: #fff;
         }
         
         @media (max-width: 992px) {
@@ -355,6 +541,10 @@
             
             .related-products-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .related-products {
+                padding: 30px 20px;
             }
         }
         
@@ -369,6 +559,22 @@
             
             .related-products-grid {
                 grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            
+            .related-products {
+                padding: 25px 15px;
+            }
+            
+            .related-products h2 {
+                font-size: 24px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .related-products .product-img {
+                height: 180px;
             }
         }
         
@@ -484,39 +690,111 @@
         }
         
         .product-videos {
-            margin: 50px 0;
+            margin: 30px 0;
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
         }
         
         .product-videos h3 {
-            text-align: center;
-            margin-bottom: 30px;
+            font-size: 22px;
+            margin-bottom: 20px;
             color: #2c3e50;
-            font-size: 28px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .product-videos h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: #3498db;
         }
         
         .video-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
         }
         
         .product-video {
-            width: calc(50% - 10px);
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            background-color: #fff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-video:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         }
         
         .product-video video {
             width: 100%;
             display: block;
+            background-color: #000;
+        }
+        
+        /* Custom video controls styling */
+        .product-video video::-webkit-media-controls {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .product-video video::-webkit-media-controls-panel {
+            padding: 0 5px;
         }
         
         @media (max-width: 768px) {
-            .product-video {
-                width: 100%;
+            .product-videos {
+                padding: 15px;
             }
+            
+            .video-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Add download button for videos */
+        .video-download-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(52, 152, 219, 0.8);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+        
+        .video-wrapper:hover .video-download-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .video-download-btn:hover {
+            background-color: rgba(52, 152, 219, 1);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-wrapper {
+            position: relative;
         }
     </style>
 </head>
@@ -829,329 +1107,81 @@
     <script src="js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Example product data based on the provided JSON structure
-            const product = {
-                _id: "67de059601850c8a5c10fe51",
-                name: "Laptop Dell XPS 15",
-                brand: "Dell",
-                model: "XPS 15 9530",
-                price: "29000000",
-                discount_percent: "5",
-                stock_quantity: "10",
-                short_description: "Premium ultrabook with stunning display and powerful performance",
-                status: "available",
-                specs: {
-                    cpu: "Intel Core i7-13700H",
-                    ram: "16GB DDR5",
-                    storage: "512GB NVMe SSD",
-                    display: "15.6 inch 4K OLED",
-                    gpu: "NVIDIA RTX 4060 6GB",
-                    battery: "86Wh",
-                    os: "Windows 11 Pro",
-                    ports: ["USB-C"]
-                },
-                category_ids: ["67ddfd25c729a5032d685992"],
-                highlights: ["Premium build quality", "High-performance components", "Stunning 4K OLED display"],
-                product_info: [
-                    {
-                        title: "Design",
-                        content: "Sleek aluminum design with carbon fiber palm rest"
-                    },
-                    {
-                        title: "Performance",
-                        content: "High-performance laptop for professionals and content creators"
-                    }
-                ],
-                variant_specs: [
-                    {
-                        name: "High Performance",
-                        specs: {
-                            cpu: "Intel Core i9",
-                            ram: "32GB DDR5",
-                            storage: "1TB NVMe SSD",
-                            display: "15.6 inch 4K OLED Touch",
-                            gpu: "NVIDIA RTX 4070 8GB",
-                            battery: "86Wh",
-                            os: "Windows 11 Pro",
-                            ports: ["Thunderbolt 4", "USB-C", "HDMI", "SD Card Reader"]
-                        },
-                        price: 35000000,
-                        discount_percent: 0
-                    },
-                    {
-                        name: "Standard",
-                        specs: {
-                            cpu: "Intel Core i7-13700H",
-                            ram: "16GB DDR5",
-                            storage: "512GB NVMe SSD",
-                            display: "15.6 inch 4K OLED",
-                            gpu: "NVIDIA RTX 4060 6GB",
-                            battery: "86Wh",
-                            os: "Windows 11 Pro",
-                            ports: ["Thunderbolt 4", "USB-C", "HDMI", "SD Card Reader"]
-                        },
-                        price: 29000000,
-                        discount_percent: 5
-                    }
-                ],
-                colors: [
-                    {
-                        name: "Grey",
-                        code: "#b1a0a0",
-                        price_adjustment: 150000,
-                        discount_adjustment: 0,
-                        images: []
-                    },
-                    {
-                        name: "Black",
-                        code: "#000000",
-                        price_adjustment: 0,
-                        discount_adjustment: 0,
-                        images: []
-                    },
-                    {
-                        name: "Red",
-                        code: "#de0d0d",
-                        price_adjustment: 50000,
-                        discount_adjustment: 0,
-                        images: []
-                    }
-                ],
-                discount_price: 27550000,
-                image_filenames: [
-                    "dell-xps15-1.webp",
-                    "dell-xps15-2.webp",
-                    "dell-xps15-3.webp",
-                    "dell-xps15-4.webp"
-                ],
-                video_filenames: [
-                    "dell-xps15-video1.mp4",
-                    "dell-xps15-video2.mp4"
-                ]
-            };
+            // Get the product ID from URL query parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
             
-            // Update product details
-            document.getElementById('product-breadcrumb-name').textContent = product.name;
-            document.getElementById('product-category').textContent = "Premium Laptop";
-            document.getElementById('product-title').textContent = product.name;
-            
-            // Format price with commas for better readability (e.g., 29,000,000)
-            const formatPrice = (price) => {
-                return parseInt(price).toLocaleString();
-            };
-            
-            // Calculate and display discount
-            const basePrice = parseInt(product.price);
-            const discountPercent = parseInt(product.discount_percent);
-            const discountPrice = product.discount_price;
-            
-            const discountDisplay = discountPercent > 0 ? 
-                `<div class="original-price">₫${formatPrice(basePrice)}</div>
-                 <div class="discount-badge">-${discountPercent}%</div>` : '';
-            
-            document.getElementById('product-price').innerHTML = `₫${formatPrice(discountPrice)} ${discountDisplay}`;
-            document.getElementById('product-description').textContent = product.short_description;
-            
-            // Set main product image
-            document.getElementById('main-product-image').style.backgroundImage = `url('images/${product.image_filenames[0]}')`;
-            
-            // Create thumbnails for all images
-            const thumbnailContainer = document.getElementById('thumbnail-container');
-            thumbnailContainer.innerHTML = '';
-            
-            product.image_filenames.forEach((image, index) => {
-                const thumb = document.createElement('div');
-                thumb.classList.add('thumbnail');
-                if (index === 0) thumb.classList.add('active');
-                thumb.style.backgroundImage = `url('images/${image}')`;
-                thumb.dataset.image = `images/${image}`;
-                thumbnailContainer.appendChild(thumb);
-            });
-            
-            // Update specifications table
-            const specTable = document.querySelector('.spec-table');
-            specTable.innerHTML = `
-                <tr>
-                    <td>Processor</td>
-                    <td>${product.specs.cpu}</td>
-                </tr>
-                <tr>
-                    <td>RAM</td>
-                    <td>${product.specs.ram}</td>
-                </tr>
-                <tr>
-                    <td>Storage</td>
-                    <td>${product.specs.storage}</td>
-                </tr>
-                <tr>
-                    <td>Display</td>
-                    <td>${product.specs.display}</td>
-                </tr>
-                <tr>
-                    <td>Graphics</td>
-                    <td>${product.specs.gpu}</td>
-                </tr>
-            `;
-            
-            // Add variant selection
-            const productInfo = document.querySelector('.product-info');
-            const variantSelector = document.createElement('div');
-            variantSelector.classList.add('variant-selector');
-            variantSelector.innerHTML = `
-                <h3>Configuration Options</h3>
-                <div class="variant-options">
-                    ${product.variant_specs.map((variant, index) => `
-                        <div class="variant-option ${index === 1 ? 'active' : ''}" data-variant-index="${index}">
-                            <div class="variant-name">${variant.name}</div>
-                            <div class="variant-price">₫${formatPrice(variant.price - (variant.price * variant.discount_percent / 100))}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            
-            // Add color selection
-            const colorSelector = document.createElement('div');
-            colorSelector.classList.add('color-selector');
-            colorSelector.innerHTML = `
-                <h3>Color Options</h3>
-                <div class="color-options">
-                    ${product.colors.map((color, index) => `
-                        <div class="color-option ${index === 0 ? 'active' : ''}" 
-                             data-color-index="${index}" 
-                             data-color-name="${color.name}"
-                             data-price-adjustment="${color.price_adjustment}"
-                             style="background-color: ${color.code}">
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="selected-color-name">Selected: ${product.colors[0].name}</div>
-            `;
-            
-            // Insert variant and color selectors before quantity selector
-            const quantitySelector = document.querySelector('.quantity-selector');
-            productInfo.insertBefore(variantSelector, quantitySelector);
-            productInfo.insertBefore(colorSelector, quantitySelector);
-            
-            // Add event listeners to thumbnails
-            const thumbnails = document.querySelectorAll('.thumbnail');
-            thumbnails.forEach(thumb => {
-                thumb.addEventListener('click', function() {
-                    thumbnails.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    document.getElementById('main-product-image').style.backgroundImage = this.style.backgroundImage;
-                });
-            });
-            
-            // Add event listeners to variant options
-            const variantOptions = document.querySelectorAll('.variant-option');
-            variantOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    variantOptions.forEach(o => o.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Update specs based on selected variant
-                    const variantIndex = parseInt(this.dataset.variantIndex);
-                    const selectedVariant = product.variant_specs[variantIndex];
-                    
-                    // Update spec table
-                    specTable.innerHTML = `
-                        <tr>
-                            <td>Processor</td>
-                            <td>${selectedVariant.specs.cpu}</td>
-                        </tr>
-                        <tr>
-                            <td>RAM</td>
-                            <td>${selectedVariant.specs.ram}</td>
-                        </tr>
-                        <tr>
-                            <td>Storage</td>
-                            <td>${selectedVariant.specs.storage}</td>
-                        </tr>
-                        <tr>
-                            <td>Display</td>
-                            <td>${selectedVariant.specs.display}</td>
-                        </tr>
-                        <tr>
-                            <td>Graphics</td>
-                            <td>${selectedVariant.specs.gpu}</td>
-                        </tr>
-                    `;
-                    
-                    // Update price
-                    const variantPrice = selectedVariant.price;
-                    const variantDiscountPercent = selectedVariant.discount_percent;
-                    const variantDiscountPrice = variantPrice - (variantPrice * variantDiscountPercent / 100);
-                    
-                    const variantDiscountDisplay = variantDiscountPercent > 0 ? 
-                        `<div class="original-price">₫${formatPrice(variantPrice)}</div>
-                         <div class="discount-badge">-${variantDiscountPercent}%</div>` : '';
-                    
-                    document.getElementById('product-price').innerHTML = 
-                        `₫${formatPrice(variantDiscountPrice)} ${variantDiscountDisplay}`;
-                });
-            });
-            
-            // Add event listeners to color options
-            const colorOptions = document.querySelectorAll('.color-option');
-            colorOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    colorOptions.forEach(o => o.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const colorName = this.dataset.colorName;
-                    document.querySelector('.selected-color-name').textContent = `Selected: ${colorName}`;
-                });
-            });
-            
-            // Update the description tab content
-            document.getElementById('description').innerHTML = `
-                <h3>Product Description</h3>
-                <p>${product.short_description}</p>
-                
-                <div class="product-highlights">
-                    <h4>Highlights</h4>
-                    <ul>
-                        ${product.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
-                    </ul>
-                </div>
-                
-                ${product.product_info.map(info => `
-                    <div class="product-info-section">
-                        <h4>${info.title}</h4>
-                        <p>${info.content}</p>
+            if (!productId) {
+                console.error('No product ID provided in URL');
+                document.querySelector('.product-detail-container').innerHTML = `
+                    <div class="error-message">
+                        <h2>Product Not Found</h2>
+                        <p>Sorry, the product you are looking for was not found.</p>
+                        <a href="products.html" class="add-to-cart-btn">Browse Products</a>
                     </div>
-                `).join('')}
-            `;
+                `;
+                return;
+            }
             
-            // Update the specifications tab with full specs
-            document.getElementById('specifications').innerHTML = `
-                <h3>Technical Specifications</h3>
-                <div class="full-specs">
-                    <table>
-                        <tr>
-                            <th colspan="2">Product Information</th>
-                        </tr>
-                        <tr>
-                            <td>Brand</td>
-                            <td>${product.brand}</td>
-                        </tr>
-                        <tr>
-                            <td>Model</td>
-                            <td>${product.model}</td>
-                        </tr>
-                        <tr>
-                            <th colspan="2">Performance</th>
-                        </tr>
+            // Call our API function to fetch the product
+            fetchProductById(productId)
+                .then(product => {
+                    if (!product) {
+                        throw new Error('Product not found');
+                    }
+                    
+                    // Update product details
+                    document.getElementById('product-breadcrumb-name').textContent = product.name;
+                    document.getElementById('product-category').textContent = getCategoryFromIds(product.category_ids);
+                    document.getElementById('product-title').textContent = product.name;
+                    
+                    // Format price with commas for better readability (e.g., 29,000,000)
+                    const formatPrice = (price) => {
+                        return parseInt(price).toLocaleString();
+                    };
+                    
+                    // Calculate and display discount
+                    const basePrice = parseInt(product.price);
+                    const discountPercent = parseInt(product.discount_percent);
+                    const discountPrice = product.discount_price;
+                    
+                    const discountDisplay = discountPercent > 0 ? 
+                        `<div class="original-price">₫${formatPrice(basePrice)}</div>
+                         <div class="discount-badge">-${discountPercent}%</div>` : '';
+                    
+                    document.getElementById('product-price').innerHTML = `₫${formatPrice(discountPrice)} ${discountDisplay}`;
+                    document.getElementById('product-description').textContent = product.short_description || '';
+                    
+                    // Set main product image
+                    const mainImageUrl = product.image_urls && product.image_urls.length > 0 
+                        ? product.image_urls[0] 
+                        : (product.thumbnail || 'images/default-laptop.jpg');
+                    
+                    document.getElementById('main-product-image').style.backgroundImage = `url('${mainImageUrl}')`;
+                    
+                    // Create thumbnails for all images
+                    const thumbnailContainer = document.getElementById('thumbnail-container');
+                    thumbnailContainer.innerHTML = '';
+                    
+                    const imageUrls = product.image_urls || [product.thumbnail || 'images/default-laptop.jpg'];
+                    imageUrls.forEach((imageUrl, index) => {
+                        const thumb = document.createElement('div');
+                        thumb.classList.add('thumbnail');
+                        if (index === 0) thumb.classList.add('active');
+                        thumb.style.backgroundImage = `url('${imageUrl}')`;
+                        thumb.dataset.image = imageUrl;
+                        thumbnailContainer.appendChild(thumb);
+                    });
+                    
+                    // Update specifications table
+                    const specTable = document.querySelector('.spec-table');
+                    specTable.innerHTML = `
                         <tr>
                             <td>Processor</td>
                             <td>${product.specs.cpu}</td>
                         </tr>
                         <tr>
-                            <td>Graphics</td>
-                            <td>${product.specs.gpu}</td>
-                        </tr>
-                        <tr>
-                            <td>Memory</td>
+                            <td>RAM</td>
                             <td>${product.specs.ram}</td>
                         </tr>
                         <tr>
@@ -1159,114 +1189,505 @@
                             <td>${product.specs.storage}</td>
                         </tr>
                         <tr>
-                            <th colspan="2">Display</th>
-                        </tr>
-                        <tr>
-                            <td>Screen</td>
+                            <td>Display</td>
                             <td>${product.specs.display}</td>
                         </tr>
                         <tr>
-                            <th colspan="2">Other</th>
+                            <td>Graphics</td>
+                            <td>${product.specs.gpu}</td>
                         </tr>
-                        <tr>
-                            <td>Operating System</td>
-                            <td>${product.specs.os}</td>
-                        </tr>
-                        <tr>
-                            <td>Battery</td>
-                            <td>${product.specs.battery}</td>
-                        </tr>
-                        <tr>
-                            <td>Ports</td>
-                            <td>${product.specs.ports.join(', ')}</td>
-                        </tr>
-                    </table>
-                </div>
-            `;
-            
-            // Add video section if videos are available
-            if (product.video_filenames && product.video_filenames.length > 0) {
-                const videoSection = document.createElement('div');
-                videoSection.classList.add('product-videos');
-                videoSection.innerHTML = `
-                    <h3>Product Videos</h3>
-                    <div class="video-container">
-                        ${product.video_filenames.map(video => `
-                            <div class="product-video">
-                                <video controls>
-                                    <source src="videos/${video}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                    `;
+                    
+                    // Add variant selection if available
+                    const productInfo = document.querySelector('.product-info');
+                    if (product.variant_specs && product.variant_specs.length > 0) {
+                        const variantSelector = document.createElement('div');
+                        variantSelector.classList.add('variant-selector');
+                        variantSelector.innerHTML = `
+                            <h3>Configuration Options</h3>
+                            <div class="variant-options">
+                                ${product.variant_specs.map((variant, index) => `
+                                    <div class="variant-option ${index === 1 ? 'active' : ''}" data-variant-index="${index}">
+                                        <div class="variant-name">${variant.name}</div>
+                                        <div class="variant-price">₫${formatPrice(variant.price - (variant.price * variant.discount_percent / 100))}</div>
+                                    </div>
+                                `).join('')}
                             </div>
-                        `).join('')}
-                    </div>
-                `;
+                        `;
+                        
+                        // Insert variant selector before quantity selector
+                        const quantitySelector = document.querySelector('.quantity-selector');
+                        if (quantitySelector) {
+                            productInfo.insertBefore(variantSelector, quantitySelector);
+                        }
+                        
+                        // Add event listeners to variant options
+                        setTimeout(() => {
+                            const variantOptions = document.querySelectorAll('.variant-option');
+                            variantOptions.forEach(option => {
+                                option.addEventListener('click', function() {
+                                    variantOptions.forEach(o => o.classList.remove('active'));
+                                    this.classList.add('active');
+                                    
+                                    // Update specs based on selected variant
+                                    const variantIndex = parseInt(this.dataset.variantIndex);
+                                    const selectedVariant = product.variant_specs[variantIndex];
+                                    
+                                    // Update spec table
+                                    if (selectedVariant.specs) {
+                                        specTable.innerHTML = `
+                                            <tr>
+                                                <td>Processor</td>
+                                                <td>${selectedVariant.specs.cpu}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>RAM</td>
+                                                <td>${selectedVariant.specs.ram}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Storage</td>
+                                                <td>${selectedVariant.specs.storage}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Display</td>
+                                                <td>${selectedVariant.specs.display}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Graphics</td>
+                                                <td>${selectedVariant.specs.gpu}</td>
+                                            </tr>
+                                        `;
+                                    }
+                                    
+                                    // Update price
+                                    const variantPrice = selectedVariant.price;
+                                    const variantDiscountPercent = selectedVariant.discount_percent;
+                                    const variantDiscountPrice = variantPrice - (variantPrice * variantDiscountPercent / 100);
+                                    
+                                    const variantDiscountDisplay = variantDiscountPercent > 0 ? 
+                                        `<div class="original-price">₫${formatPrice(variantPrice)}</div>
+                                         <div class="discount-badge">-${variantDiscountPercent}%</div>` : '';
+                                    
+                                    document.getElementById('product-price').innerHTML = 
+                                        `₫${formatPrice(variantDiscountPrice)} ${variantDiscountDisplay}`;
+                                });
+                            });
+                        }, 100);
+                    }
+                    
+                    // Add color selection if available
+                    if (product.colors && product.colors.length > 0) {
+                        const colorSelector = document.createElement('div');
+                        colorSelector.classList.add('color-selector');
+                        colorSelector.innerHTML = `
+                            <h3>Color Options</h3>
+                            <div class="color-options">
+                                ${product.colors.map((color, index) => `
+                                    <div class="color-option ${index === 0 ? 'active' : ''}" 
+                                         data-color-index="${index}" 
+                                         data-color-name="${color.name}"
+                                         data-price-adjustment="${color.price_adjustment || 0}"
+                                         style="background-color: ${color.code}">
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="selected-color-name">Selected: ${product.colors[0].name}</div>
+                        `;
+                        
+                        // Insert color selector before quantity selector
+                        const quantitySelector = document.querySelector('.quantity-selector');
+                        if (quantitySelector) {
+                            productInfo.insertBefore(colorSelector, quantitySelector);
+                        }
+                        
+                        // Add event listeners to color options
+                        setTimeout(() => {
+                            const colorOptions = document.querySelectorAll('.color-option');
+                            colorOptions.forEach(option => {
+                                option.addEventListener('click', function() {
+                                    colorOptions.forEach(o => o.classList.remove('active'));
+                                    this.classList.add('active');
+                                    
+                                    const colorName = this.dataset.colorName;
+                                    document.querySelector('.selected-color-name').textContent = `Selected: ${colorName}`;
+                                });
+                            });
+                        }, 100);
+                    }
+                    
+                    // Add thumbnails event listeners
+                    setTimeout(() => {
+                        const thumbnails = document.querySelectorAll('.thumbnail');
+                        thumbnails.forEach(thumb => {
+                            thumb.addEventListener('click', function() {
+                                thumbnails.forEach(t => t.classList.remove('active'));
+                                this.classList.add('active');
+                                document.getElementById('main-product-image').style.backgroundImage = this.style.backgroundImage;
+                            });
+                        });
+                    }, 100);
+                    
+                    // Update the description tab content
+                    const descriptionTab = document.getElementById('description');
+                    if (descriptionTab) {
+                        descriptionTab.innerHTML = `
+                            <h3>Product Description</h3>
+                            <p>${product.short_description || ''}</p>
+                            
+                            ${product.highlights && product.highlights.length > 0 ? `
+                                <div class="product-highlights">
+                                    <h4>Highlights</h4>
+                                    <ul>
+                                        ${product.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            
+                            ${product.product_info && product.product_info.length > 0 ? 
+                                product.product_info.map(info => `
+                                    <div class="product-info-section">
+                                        <h4>${info.title}</h4>
+                                        <p>${info.content}</p>
+                                    </div>
+                                `).join('') : ''}
+                        `;
+                    }
+                    
+                    // Update the specifications tab with full specs
+                    const specificationsTab = document.getElementById('specifications');
+                    if (specificationsTab && product.specs) {
+                        specificationsTab.innerHTML = `
+                            <h3>Technical Specifications</h3>
+                            <div class="full-specs">
+                                <table>
+                                    <tr>
+                                        <th colspan="2">Product Information</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Brand</td>
+                                        <td>${product.brand || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Model</td>
+                                        <td>${product.model || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Performance</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Processor</td>
+                                        <td>${product.specs.cpu || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Graphics</td>
+                                        <td>${product.specs.gpu || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Memory</td>
+                                        <td>${product.specs.ram || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Storage</td>
+                                        <td>${product.specs.storage || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Display</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Screen</td>
+                                        <td>${product.specs.display || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Other</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Operating System</td>
+                                        <td>${product.specs.os || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Battery</td>
+                                        <td>${product.specs.battery || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ports</td>
+                                        <td>${product.specs.ports ? product.specs.ports.join(', ') : 'N/A'}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        `;
+                    }
+                    
+                    // Add video section if videos are available
+                    if (product.video_urls && product.video_urls.length > 0) {
+                        const videoSection = document.createElement('div');
+                        videoSection.classList.add('product-videos');
+                        videoSection.innerHTML = `
+                            <h3>Product Videos</h3>
+                            <div class="video-container">
+                                ${product.video_urls.map(video => `
+                                    <div class="product-video">
+                                        <div class="video-wrapper">
+                                            <video controls>
+                                                <source src="${video}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <a href="${video}" download class="video-download-btn">
+                                                <i class="fas fa-download"></i> Download
+                                            </a>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                        
+                        // Insert after tabs
+                        const tabsSection = document.querySelector('.tabs');
+                        if (tabsSection) {
+                            tabsSection.parentNode.insertBefore(videoSection, tabsSection.nextSibling);
+                        }
+                    }
+                    
+                    // Handle add to cart
+                    const addToCartButton = document.getElementById('detail-add-to-cart');
+                    if (addToCartButton) {
+                        addToCartButton.addEventListener('click', () => {
+                            const quantity = parseInt(document.querySelector('.quantity-value').value);
+                            
+                            // Get selected variant
+                            const selectedVariantElement = document.querySelector('.variant-option.active');
+                            const selectedVariantIndex = selectedVariantElement ? parseInt(selectedVariantElement.dataset.variantIndex) : 0;
+                            const selectedVariant = product.variant_specs && product.variant_specs.length > 0
+                                ? product.variant_specs[selectedVariantIndex]
+                                : { name: 'Standard', price: product.price, discount_percent: product.discount_percent };
+                            
+                            // Get selected color
+                            const selectedColorElement = document.querySelector('.color-option.active');
+                            const selectedColorIndex = selectedColorElement ? parseInt(selectedColorElement.dataset.colorIndex) : 0;
+                            const selectedColor = product.colors && product.colors.length > 0
+                                ? product.colors[selectedColorIndex]
+                                : { name: 'Default', price_adjustment: 0 };
+                            
+                            // Calculate final price with variant and color adjustments
+                            const variantPrice = selectedVariant.price;
+                            const variantDiscountPercent = selectedVariant.discount_percent;
+                            const colorPriceAdjustment = parseInt(selectedColor.price_adjustment || 0);
+                            
+                            const finalPrice = (variantPrice - (variantPrice * variantDiscountPercent / 100)) + colorPriceAdjustment;
+                            
+                            // Create cart item
+                            const cartItem = {
+                                id: product._id,
+                                title: product.name,
+                                variant: selectedVariant.name,
+                                color: selectedColor.name,
+                                price: finalPrice,
+                                image: product.image_urls ? product.image_urls[0] : (product.thumbnail || 'images/default-laptop.jpg'),
+                                quantity: quantity
+                            };
+                            
+                            // Add to cart
+                            addToCart(cartItem);
+                            
+                            // Show notification
+                            showNotification(`${product.name} added to your cart!`);
+                        });
+                    }
+                    
+                    // Fetch related products based on category
+                    if (product.category_ids && product.category_ids.length > 0) {
+                        fetchProducts({ 
+                            category: product.category_ids[0],
+                            limit: 4
+                        }).then(result => {
+                            // Filter out the current product
+                            const relatedProducts = result.products.filter(p => p.id !== product._id).slice(0, 4);
+                            displayRelatedProducts(relatedProducts);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching product:', error);
+                    document.querySelector('.product-detail-container').innerHTML = `
+                        <div class="error-message">
+                            <h2>Product Not Found</h2>
+                            <p>Sorry, the product you are looking for was not found.</p>
+                            <a href="products.html" class="add-to-cart-btn">Browse Products</a>
+                        </div>
+                    `;
+                });
                 
-                // Insert after tabs
-                const tabsSection = document.querySelector('.tabs');
-                tabsSection.parentNode.insertBefore(videoSection, tabsSection.nextSibling);
+            // Function to display related products
+            function displayRelatedProducts(products) {
+                const container = document.getElementById('related-products');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.classList.add('product-card');
+                    
+                    const discountBadge = product.discount_percent > 0 
+                        ? `<div class="discount-badge">-${product.discount_percent}%</div>` 
+                        : '';
+                    
+                    const formattedPrice = (price) => parseInt(price).toLocaleString();
+                    const priceDisplay = product.discount_percent > 0
+                        ? `
+                            <div class="product-price">
+                                ₫${formattedPrice(product.discount_price)}
+                                <span class="original-price">₫${formattedPrice(product.price)}</span>
+                            </div>
+                        `
+                        : `<div class="product-price">₫${formattedPrice(product.price)}</div>`;
+                    
+                    productCard.innerHTML = `
+                        <div class="product-img" style="background-image: url('${product.image}')">
+                            ${discountBadge}
+                            <div class="product-actions">
+                                <button class="action-btn quick-view" data-id="${product.id}">
+                                    <i class="fas fa-eye"></i>
+                                    <span class="tooltip">Quick View</span>
+                                </button>
+                                <button class="action-btn add-to-cart" data-id="${product.id}">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span class="tooltip">Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-category">${product.category}</div>
+                            <h3 class="product-title">${product.title}</h3>
+                            ${priceDisplay}
+                            <a href="product-detail.html?id=${product.id}" class="view-details">View Details</a>
+                        </div>
+                    `;
+                    
+                    container.appendChild(productCard);
+                });
+                
+                // Add event listeners to related products buttons
+                const quickViewButtons = container.querySelectorAll('.quick-view');
+                quickViewButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const productId = this.dataset.id;
+                        const product = products.find(p => p.id === productId);
+                        if (product) {
+                            showQuickViewModal(product);
+                        }
+                    });
+                });
+                
+                const addToCartButtons = container.querySelectorAll('.add-to-cart');
+                addToCartButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const productId = this.dataset.id;
+                        const product = products.find(p => p.id === productId);
+                        if (product) {
+                            addToCart({
+                                id: product.id,
+                                title: product.title,
+                                variant: 'Standard',
+                                color: 'Default',
+                                price: product.discount_price || product.price,
+                                image: product.image,
+                                quantity: 1
+                            });
+                            
+                            showNotification(`${product.title} added to your cart!`);
+                        }
+                    });
+                });
             }
             
-            // Handle add to cart
-            document.getElementById('detail-add-to-cart').addEventListener('click', () => {
-                const quantity = parseInt(document.querySelector('.quantity-value').value);
-                const selectedVariantIndex = document.querySelector('.variant-option.active').dataset.variantIndex;
-                const selectedVariant = product.variant_specs[selectedVariantIndex];
-                const selectedColorIndex = document.querySelector('.color-option.active').dataset.colorIndex;
-                const selectedColor = product.colors[selectedColorIndex];
-                
-                // Calculate final price with variant and color adjustments
-                const variantPrice = selectedVariant.price;
-                const variantDiscountPercent = selectedVariant.discount_percent;
-                const colorPriceAdjustment = parseInt(selectedColor.price_adjustment);
-                
-                const finalPrice = (variantPrice - (variantPrice * variantDiscountPercent / 100)) + colorPriceAdjustment;
-                
-                // Create cart item
-                const cartItem = {
-                    id: product._id,
-                    title: product.name,
-                    variant: selectedVariant.name,
-                    color: selectedColor.name,
-                    price: finalPrice,
-                    image: `images/${product.image_filenames[0]}`,
-                    quantity: quantity
-                };
+            // Function to add item to cart
+            function addToCart(item) {
+                // Get existing cart from local storage
+                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
                 
                 // Check if similar item is already in cart
-                const existingItemIndex = cart.findIndex(item => 
-                    item.id === cartItem.id && 
-                    item.variant === cartItem.variant && 
-                    item.color === cartItem.color
+                const existingItemIndex = cart.findIndex(cartItem => 
+                    cartItem.id === item.id && 
+                    cartItem.variant === item.variant && 
+                    cartItem.color === item.color
                 );
                 
                 if (existingItemIndex >= 0) {
-                    cart[existingItemIndex].quantity += quantity;
+                    cart[existingItemIndex].quantity += item.quantity;
                 } else {
-                    cart.push(cartItem);
+                    cart.push(item);
                 }
                 
-                // Update cart and localStorage
-                updateCart();
-                saveCart();
-                showNotification(`${product.name} (${selectedVariant.name}, ${selectedColor.name}) added to cart`);
-            });
+                // Save to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Update cart count in header
+                updateCartCount(cart.reduce((total, item) => total + item.quantity, 0));
+            }
             
-            // Rest of the code (tabs handling, etc.) remains unchanged
+            // Function to update cart count in header
+            function updateCartCount(count) {
+                const cartCountElement = document.querySelector('.cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = count;
+                    if (count > 0) {
+                        cartCountElement.classList.add('active');
+                    } else {
+                        cartCountElement.classList.remove('active');
+                    }
+                }
+            }
+            
+            // Function to show notification
+            function showNotification(message) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.classList.add('active');
+                
+                setTimeout(() => {
+                    notification.classList.remove('active');
+                }, 3000);
+            }
+            
+            // Initialize cart count
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            updateCartCount(cart.reduce((total, item) => total + item.quantity, 0));
+            
+            // Tab navigation
             const tabLinks = document.querySelectorAll('.tab-link');
             const tabContents = document.querySelectorAll('.tab-content');
             
             tabLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    tabLinks.forEach(tab => tab.classList.remove('active'));
+                link.addEventListener('click', () => {
+                    const tabId = link.getAttribute('data-tab');
+                    
+                    tabLinks.forEach(link => link.classList.remove('active'));
                     tabContents.forEach(content => content.classList.remove('active'));
                     
-                    this.classList.add('active');
-                    const tabId = this.getAttribute('data-tab');
+                    link.classList.add('active');
                     document.getElementById(tabId).classList.add('active');
                 });
             });
+            
+            // Quantity selector
+            const plusBtn = document.querySelector('.plus-btn');
+            const minusBtn = document.querySelector('.minus-btn');
+            const quantityValue = document.querySelector('.quantity-value');
+            
+            if (plusBtn && minusBtn && quantityValue) {
+                plusBtn.addEventListener('click', () => {
+                    let quantity = parseInt(quantityValue.value);
+                    quantityValue.value = quantity + 1;
+                });
+                
+                minusBtn.addEventListener('click', () => {
+                    let quantity = parseInt(quantityValue.value);
+                    if (quantity > 1) {
+                        quantityValue.value = quantity - 1;
+                    }
+                });
+            }
         });
     </script>
 </body>
-</html> 
+</html>

@@ -231,6 +231,260 @@ async function fetchProducts(options = {}) {
     }
 }
 
+// New function to fetch a single product by ID
+async function fetchProductById(productId) {
+    try {
+        // Validate productId format
+        const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+        if (!isValidObjectId(productId)) {
+            console.error('Invalid product ID format:', productId);
+            return null;
+        }
+        
+        console.log(`Fetching product details for ID: ${productId}`);
+        const apiUrl = `${API_BASE_URL}/products/${productId}`;
+        
+        try {
+            // Attempt to connect to the API with a short timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            // Make the API request
+            const response = await fetch(apiUrl, {
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                throw new Error(`Error fetching product: ${response.status}`);
+            }
+            
+            // Parse the product data
+            const product = await response.json();
+            console.log('Successfully fetched product data:', product);
+            
+            // Process the image URLs to include the full path
+            if (product.thumbnail) {
+                product.thumbnail = `${API_BASE_URL}/products/files/${product.thumbnail}`;
+            }
+            
+            // Transform image identifiers to full URLs if they exist
+            if (product.images && product.images.length > 0) {
+                product.image_urls = product.images.map(imageId => 
+                    `${API_BASE_URL}/products/files/${imageId}`
+                );
+            }
+            
+            // Transform video identifiers to full URLs if they exist
+            if (product.videos && product.videos.length > 0) {
+                product.video_urls = product.videos.map(videoId => 
+                    `${API_BASE_URL}/products/files/${videoId}`
+                );
+            }
+            
+            return product;
+            
+        } catch (apiError) {
+            console.warn('API unavailable or error fetching product, searching in sample data:', apiError);
+            
+            // Try to find the product in the local sample data
+            // First check if we already have loaded products
+            if (products && products.length > 0) {
+                const productMatch = products.find(p => p.id === productId);
+                if (productMatch) {
+                    return convertToDetailFormat(productMatch);
+                }
+            }
+            
+            // If not found in loaded products, check in sample products
+            if (typeof sampleProducts !== 'undefined') {
+                const sampleMatch = sampleProducts.find(p => p.id === productId);
+                if (sampleMatch) {
+                    return convertToDetailFormat(sampleMatch);
+                }
+            }
+            
+            // Last resort: try to load the hardcoded sample product (if available in your codebase)
+            return getSampleProductData(productId);
+        }
+    } catch (error) {
+        console.error('Error in fetchProductById:', error);
+        return null;
+    }
+}
+
+// Helper function to convert from our frontend product format to detail format
+function convertToDetailFormat(product) {
+    // This function converts a product from the list format to the detail format if needed
+    // For example, in some implementations these might have different structures
+    
+    // Return a format matching what the API would return
+    return {
+        _id: product.id,
+        name: product.title,
+        price: product.price,
+        discount_percent: product.discount_percent,
+        discount_price: product.discount_price,
+        thumbnail: product.image,
+        image_urls: [product.image], // We might only have one image in this case
+        // Add other properties as needed
+        specs: extractSpecs(product.description),
+        short_description: product.description,
+        // Add placeholder data for properties we don't have
+        brand: "Sample Brand",
+        model: "Sample Model",
+        stock_quantity: 10,
+        status: "available",
+        category_ids: [],
+        variant_specs: [],
+        colors: [
+            { name: "Default", code: "#000000", price_adjustment: 0 }
+        ],
+        highlights: []
+    };
+}
+
+// Helper function to extract specs from description string
+function extractSpecs(description) {
+    // This is a simple parser that tries to extract specs from a description string
+    // In a real app, you'd have proper structured data
+    
+    // Default specs
+    const specs = {
+        cpu: "Unknown",
+        ram: "Unknown",
+        storage: "Unknown",
+        display: "Unknown",
+        gpu: "Unknown",
+        battery: "Unknown",
+        os: "Windows",
+        ports: ["USB"]
+    };
+    
+    // Try to parse some specs from the description
+    if (description) {
+        const parts = description.split(',');
+        if (parts.length >= 4) {
+            specs.cpu = parts[0].trim();
+            specs.ram = parts[1].trim();
+            specs.storage = parts[2].trim();
+            specs.gpu = parts[3].trim();
+        }
+    }
+    
+    return specs;
+}
+
+// Sample product data for fallback
+function getSampleProductData(productId) {
+    // This is a fallback function that returns hardcoded sample data
+    return {
+        _id: productId,
+        name: "Laptop Dell XPS 15",
+        brand: "Dell",
+        model: "XPS 15 9530",
+        price: 29000000,
+        discount_percent: 5,
+        discount_price: 27550000,
+        stock_quantity: 10,
+        status: "available",
+        category_ids: ["6600a1c3b6f4a2d4e8f3b131"],
+        thumbnail: "images/dell-xps15-1.webp",
+        image_urls: [
+            "images/dell-xps15-1.webp",
+            "images/dell-xps15-2.webp", 
+            "images/dell-xps15-3.webp",
+            "images/dell-xps15-4.webp"
+        ],
+        video_urls: [
+            "videos/dell-xps15-video1.mp4",
+            "videos/dell-xps15-video2.mp4"
+        ],
+        short_description: "Premium ultrabook with stunning display and powerful performance",
+        specs: {
+            cpu: "Intel Core i7-13700H",
+            ram: "16GB DDR5",
+            storage: "512GB NVMe SSD",
+            display: "15.6 inch 4K OLED",
+            gpu: "NVIDIA RTX 4060 6GB",
+            battery: "86Wh",
+            os: "Windows 11 Pro",
+            ports: ["Thunderbolt 4", "USB-C", "HDMI", "SD Card Reader"]
+        },
+        highlights: [
+            "Premium build quality", 
+            "High-performance components", 
+            "Stunning 4K OLED display"
+        ],
+        product_info: [
+            {
+                title: "Design",
+                content: "Sleek aluminum design with carbon fiber palm rest"
+            },
+            {
+                title: "Performance",
+                content: "High-performance laptop for professionals and content creators"
+            }
+        ],
+        variant_specs: [
+            {
+                name: "High Performance",
+                specs: {
+                    cpu: "Intel Core i9",
+                    ram: "32GB DDR5",
+                    storage: "1TB NVMe SSD",
+                    display: "15.6 inch 4K OLED Touch",
+                    gpu: "NVIDIA RTX 4070 8GB",
+                    battery: "86Wh",
+                    os: "Windows 11 Pro",
+                    ports: ["Thunderbolt 4", "USB-C", "HDMI", "SD Card Reader"]
+                },
+                price: 35000000,
+                discount_percent: 0
+            },
+            {
+                name: "Standard",
+                specs: {
+                    cpu: "Intel Core i7-13700H",
+                    ram: "16GB DDR5",
+                    storage: "512GB NVMe SSD",
+                    display: "15.6 inch 4K OLED",
+                    gpu: "NVIDIA RTX 4060 6GB",
+                    battery: "86Wh",
+                    os: "Windows 11 Pro",
+                    ports: ["Thunderbolt 4", "USB-C", "HDMI", "SD Card Reader"]
+                },
+                price: 29000000,
+                discount_percent: 5
+            }
+        ],
+        colors: [
+            {
+                name: "Grey",
+                code: "#b1a0a0",
+                price_adjustment: 150000,
+                discount_adjustment: 0,
+                images: []
+            },
+            {
+                name: "Black",
+                code: "#000000",
+                price_adjustment: 0,
+                discount_adjustment: 0,
+                images: []
+            },
+            {
+                name: "Red",
+                code: "#de0d0d",
+                price_adjustment: 50000,
+                discount_adjustment: 0,
+                images: []
+            }
+        ]
+    };
+}
+
 // Helper function to get category name from category IDs
 function getCategoryFromIds(categoryIds) {
     if (!categoryIds || categoryIds.length === 0) {
