@@ -82,55 +82,75 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create full location string
             const locationString = [wardName, districtName, provinceName].filter(Boolean).join(', ');
             
-            // Get form data
-            const formData = {
-                fullName: document.getElementById('full-name').value,
-                phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value,
-                address: document.getElementById('address').value,
-                location: {
-                    province: {
-                        code: provinceSelect.value,
-                        name: provinceName
-                    },
-                    district: {
-                        code: districtSelect.value,
-                        name: districtName
-                    },
-                    ward: {
-                        code: wardSelect.value,
-                        name: wardName
-                    },
-                    fullString: locationString
+            // Format data according to the Orders API schema
+            const orderData = {
+                customer: {
+                    fullName: document.getElementById('full-name').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value
                 },
-                paymentMethod: document.querySelector('input[name="payment-method"]:checked').value,
+                shippingAddress: {
+                    province: provinceName,
+                    district: districtName,
+                    ward: wardName,
+                    streetAddress: document.getElementById('address').value
+                },
                 items: cart.map(item => ({
-                    id: item.id,
-                    title: item.title,
-                    variant: item.variant,
-                    color: item.color,
-                    price: item.price,
-                    quantity: item.quantity
+                    productId: item.id,
+                    quantity: item.quantity,
+                    variantName: typeof item.variant === 'object' ? item.variant.name : item.variant,
+                    colorName: typeof item.color === 'object' ? item.color.name : item.color
                 })),
-                subtotal: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
-                shipping: cart.reduce((total, item) => total + (item.price * item.quantity), 0) > 500000 ? 0 : 30000
+                payment: {
+                    method: document.querySelector('input[name="payment-method"]:checked').value.toUpperCase()
+                }
             };
             
-            formData.total = formData.subtotal + formData.shipping;
+            // Show loading notification
+            showNotification('Processing your order...', 'info', 2000);
             
-            // In a real application, we would send this data to a server
-            console.log('Order submitted:', formData);
-            
-            // Show success message
-            showNotification('Thank you for your order! Order has been placed successfully.', 'success', 5000);
-            
-            // Clear cart
-            cart = [];
-            updateCart();
-            saveCart();
-            
-            // Close checkout sheet
-            closeCheckoutSheet();
+            // Send order data to API
+            fetch('http://localhost:5000/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => {
+                // Log the full request for debugging
+                console.log('Order request:', JSON.stringify(orderData, null, 2));
+                
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        console.error('API Error Response:', errorData);
+                        throw new Error(errorData.message || 'API request failed');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    showNotification(`Thank you for your order! Order #${data.data.orderNumber} has been placed successfully.`, 'success', 5000);
+                    
+                    // Clear cart
+                    cart = [];
+                    updateCart();
+                    saveCart();
+                    
+                    // Close checkout sheet
+                    closeCheckoutSheet();
+                } else {
+                    // Show error message
+                    const errorMessage = data.errors ? data.errors.join(', ') : 'Failed to place order. Please try again.';
+                    showNotification(errorMessage, 'error', 5000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while processing your order. Please try again.', 'error', 5000);
+            });
         });
     }
     

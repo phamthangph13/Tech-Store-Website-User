@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên hệ - TechStore</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .contact-page {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .contact-page .section-title {
+            margin-bottom: 50px;
+        }
+        
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .contact-form {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-form h3 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .contact-form h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 1.5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.4);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+        
+        .contact-info {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-info h3 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .contact-info h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 1.5px;
+        }
+        
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 8px 15px rgba(52, 152, 219, 0.3);
+            color: white;
+            font-size: 20px;
+        }
+        
+        .info-text {
+            flex: 1;
+        }
+        
+        .info-text h4 {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .info-text p {
+            margin: 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .social-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px;
+            height: 45px;
+            background-color: #f1f1f1;
+            border-radius: 50%;
+            color: #333;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: #3498db;
+            color: white;
+            transform: translateY(-5px);
+        }
+        
+        .map-container {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 400px;
+            margin-bottom: 60px;
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .faq-section {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .faq-section h3 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .faq-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 1.5px;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            background-color: #f9f9f9;
+            padding: 18px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-question:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 20px;
+            max-height: 500px;
+        }
+        
+        .faq-answer p {
+            margin: 0;
+            line-height: 1.7;
+            color: #555;
+        }
+        
+        @media (max-width: 992px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form, .contact-info {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>TechStore</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="products.html">Sản phẩm</a></li>
+                    <li><a href="about.html">Giới thiệu</a></li>
+                    <li><a href="contact.html" class="active">Liên hệ</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Giỏ hàng của bạn</h2>
+            <button id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div class="cart-total">
+            <h3>Tổng cộng: <span id="cart-total-price">0</span> ₫</h3>
+        </div>
+        <button id="checkout-btn">Thanh toán</button>
+    </div>
+
+    <!-- Checkout Sheet -->
+    <div class="checkout-overlay" id="checkout-overlay">
+        <div class="checkout-sheet">
+            <div class="checkout-header">
+                <h2>Hoàn tất đơn hàng</h2>
+                <button id="close-checkout">&times;</button>
+            </div>
+            <div class="checkout-content">
+                <div class="checkout-summary">
+                    <h3>Thông tin đơn hàng</h3>
+                    <div class="checkout-items">
+                        <!-- Summary of cart items will be displayed here -->
+                    </div>
+                    <div class="checkout-subtotal">
+                        <div>Tạm tính:</div>
+                        <div class="price"><span id="checkout-subtotal">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-shipping">
+                        <div>Phí vận chuyển:</div>
+                        <div class="price"><span id="checkout-shipping">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-total">
+                        <div>Tổng cộng:</div>
+                        <div class="price"><span id="checkout-total">0</span> ₫</div>
+                    </div>
+                </div>
+                <form id="checkout-form">
+                    <h3>Thông tin giao hàng</h3>
+                    <div class="form-group">
+                        <label for="full-name">Họ và tên</label>
+                        <input type="text" id="full-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Địa chỉ giao hàng</label>
+                        <textarea id="address" required rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="province">Tỉnh/Thành phố</label>
+                        <select id="province" required>
+                            <option value="">Chọn Tỉnh/Thành phố</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="district">Quận/Huyện</label>
+                        <select id="district" required disabled>
+                            <option value="">Chọn Quận/Huyện</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ward">Phường/Xã</label>
+                        <select id="ward" required disabled>
+                            <option value="">Chọn Phường/Xã</option>
+                        </select>
+                    </div>
+                    
+                    <h3>Phương thức thanh toán</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method">
+                            <input type="radio" id="cod" name="payment-method" value="cod" checked>
+                            <label for="cod">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Thanh toán khi nhận hàng</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer">
+                            <label for="bank-transfer">
+                                <i class="fas fa-university"></i>
+                                <span>Chuyển khoản ngân hàng</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="credit-card" name="payment-method" value="credit-card">
+                            <label for="credit-card">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Thẻ tín dụng/Ghi nợ</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-actions">
+                        <button type="button" id="cancel-checkout">Hủy</button>
+                        <button type="submit" id="place-order-btn">Đặt hàng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <section class="contact-page">
+        <div class="container">
+            <h2 class="section-title">Liên hệ với chúng tôi</h2>
+            
+            <div class="contact-container">
+                <div class="contact-form">
+                    <h3>Gửi tin nhắn cho chúng tôi</h3>
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <label for="name">Họ và tên</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-email">Email</label>
+                            <input type="email" id="contact-email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-phone">Số điện thoại</label>
+                            <input type="tel" id="contact-phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Chủ đề</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Nội dung tin nhắn</label>
+                            <textarea id="message" name="message" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Gửi tin nhắn</button>
+                    </form>
+                </div>
+                
+                <div class="contact-info">
+                    <h3>Thông tin liên hệ</h3>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-text">
+                                <h4>Địa chỉ</h4>
+                                <p>123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh</p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="info-text">
+                                <h4>Điện thoại</h4>
+                                <p>+84 28 1234 5678</p>
+                                <p>+84 90 1234 567</p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="info-text">
+                                <h4>Email</h4>
+                                <p>info@techstore.vn</p>
+                                <p>support@techstore.vn</p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="info-text">
+                                <h4>Giờ làm việc</h4>
+                                <p>Thứ 2 - Thứ 6: 8:30 - 20:00</p>
+                                <p>Thứ 7 & Chủ nhật: 9:00 - 18:00</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.484168340011!2d106.70147881471072!3d10.772088792323764!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f40a3b49e59%3A0xa1bd14e483a602db!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBLaG9hIGjhu41jIFThu7Egbmhpw6puLCDEkEhRRy1IQ00!5e0!3m2!1svi!2s!4v1596116242915!5m2!1svi!2s" frameborder="0" allowfullscreen></iframe>
+            </div>
+            
+            <div class="faq-section">
+                <h3>Câu hỏi thường gặp</h3>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        TechStore có chính sách bảo hành như thế nào?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Tất cả sản phẩm laptop tại TechStore đều được bảo hành chính hãng từ 12 đến 24 tháng tùy theo thương hiệu. Ngoài ra, chúng tôi còn cung cấp gói bảo hành mở rộng lên đến 36 tháng với mức phí hợp lý. Khách hàng có thể mang sản phẩm đến trực tiếp cửa hàng của chúng tôi hoặc gửi đến trung tâm bảo hành được ủy quyền.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Làm thế nào để theo dõi đơn hàng của tôi?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sau khi đặt hàng thành công, bạn sẽ nhận được email xác nhận với mã đơn hàng. Bạn có thể sử dụng mã này để theo dõi trạng thái đơn hàng trên trang web của chúng tôi tại phần "Kiểm tra đơn hàng" hoặc thông qua ứng dụng di động TechStore. Ngoài ra, bạn cũng sẽ nhận được thông báo SMS về trạng thái đơn hàng tại các bước quan trọng.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        TechStore có giao hàng đến tỉnh/thành phố nào?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>TechStore hỗ trợ giao hàng trên toàn quốc. Đối với khu vực nội thành Hà Nội và TP. Hồ Chí Minh, thời gian giao hàng thường là 1-2 ngày làm việc. Đối với các tỉnh/thành phố khác, thời gian giao hàng từ 3-5 ngày làm việc tùy theo khu vực. Phí vận chuyển sẽ được tính dựa trên khoảng cách và khối lượng sản phẩm.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Tôi có thể đổi/trả sản phẩm không?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>TechStore có chính sách đổi/trả sản phẩm trong vòng 7 ngày kể từ ngày mua hàng nếu sản phẩm gặp lỗi kỹ thuật hoặc không đúng như mô tả. Sản phẩm đổi/trả phải còn nguyên vẹn, đầy đủ phụ kiện và hộp đựng. Đối với sản phẩm không lỗi, chúng tôi áp dụng phí tái nhập kho 10% giá trị sản phẩm. Vui lòng liên hệ với bộ phận Chăm sóc Khách hàng để được hướng dẫn quy trình đổi/trả.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        TechStore có hỗ trợ trả góp không?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Có, TechStore hỗ trợ mua hàng trả góp với nhiều hình thức linh hoạt. Chúng tôi liên kết với các ngân hàng và công ty tài chính như HomeCredit, FE Credit, và hầu hết các ngân hàng phổ biến tại Việt Nam. Khách hàng có thể chọn thời gian trả góp từ 6-24 tháng với lãi suất cạnh tranh. Thủ tục đơn giản, chỉ cần CMND/CCCD và một số giấy tờ cơ bản, thời gian duyệt hồ sơ nhanh chóng trong vòng 15-30 phút.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TechStore. Tất cả các quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/location-selector.js"></script>
+    <script src="js/contact.js"></script>
+</body>
+</html> 

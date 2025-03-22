@@ -65,14 +65,6 @@ async function fetchProducts(options = {}) {
                     queryParams.append('sort_by', 'price');
                     queryParams.append('sort_order', 'desc');
                     break;
-                case 'name-asc':
-                    queryParams.append('sort_by', 'name');
-                    queryParams.append('sort_order', 'asc');
-                    break;
-                case 'name-desc':
-                    queryParams.append('sort_by', 'name');
-                    queryParams.append('sort_order', 'desc');
-                    break;
                 default:
                     // Default sorting is by created_at
                     queryParams.append('sort_by', 'created_at');
@@ -119,7 +111,7 @@ async function fetchProducts(options = {}) {
             // Transform the API response to match our expected format
             products = data.products.map(product => ({
                 id: product._id,
-                title: product.name,
+                title: product.name || '',
                 category: getCategoryFromIds(product.category_ids),
                 price: product.price *1, // Assuming price is in cents
                 discount_percent: product.discount_percent || 0,
@@ -184,12 +176,6 @@ async function fetchProducts(options = {}) {
                         break;
                     case 'price-high':
                         filteredProducts.sort((a, b) => b.price - a.price);
-                        break;
-                    case 'name-asc':
-                        filteredProducts.sort((a, b) => a.title.localeCompare(b.title));
-                        break;
-                    case 'name-desc':
-                        filteredProducts.sort((a, b) => b.title.localeCompare(a.title));
                         break;
                     default:
                         // Default sort (by id)
@@ -721,4 +707,96 @@ document.addEventListener('DOMContentLoaded', () => {
         products = window.sampleProducts || [];
         displayProducts('all');
     });
+    
+    // Add event listeners for filter buttons (category buttons)
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('filter-btn') || e.target.closest('.filter-btn')) {
+            const button = e.target.classList.contains('filter-btn') ? e.target : e.target.closest('.filter-btn');
+            
+            // Remove active class from all filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            button.classList.add('active');
+            
+            // Get category from data attribute
+            const category = button.getAttribute('data-category');
+            
+            // Display products of the selected category
+            displayProducts(category);
+        }
+    });
+    
+    // Add event listener for sort select
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const sortValue = this.value;
+            const activeCategory = document.querySelector('.filter-btn.active')?.getAttribute('data-category') || 'all';
+            
+            // Fetch products with sorting option
+            fetchProducts({
+                category: activeCategory,
+                sort: sortValue,
+                query: document.getElementById('search-input')?.value || ''
+            }).then(result => {
+                products = result.products;
+                displayProducts(activeCategory);
+            }).catch(error => {
+                console.error('Error sorting products:', error);
+            });
+        });
+    }
+    
+    // Add event listeners for search
+    const searchBtn = document.getElementById('search-btn');
+    const searchInput = document.getElementById('search-input');
+    
+    if (searchBtn && searchInput) {
+        // Search button click handler
+        searchBtn.addEventListener('click', performSearch);
+        
+        // Enter key press handler
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                performSearch();
+            }
+        });
+    }
+    
+    // Function to perform search
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        const activeCategory = document.querySelector('.filter-btn.active')?.getAttribute('data-category') || 'all';
+        const sortValue = sortSelect?.value || 'default';
+        
+        // Fetch products with search query
+        fetchProducts({
+            category: activeCategory,
+            sort: sortValue,
+            query: searchTerm
+        }).then(result => {
+            products = result.products;
+            displayProducts(activeCategory);
+            
+            // Show message if no results found
+            if (products.length === 0) {
+                const productGrid = document.querySelector('.product-grid');
+                if (productGrid) {
+                    productGrid.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <p>No products found matching "${searchTerm}"</p>
+                            <button class="btn" onclick="location.reload()">Show All Products</button>
+                        </div>
+                    `;
+                }
+            }
+        }).catch(error => {
+            console.error('Error searching products:', error);
+        });
+    }
 }); 

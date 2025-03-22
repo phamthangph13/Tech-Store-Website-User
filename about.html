@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới thiệu - TechStore</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .about-page {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .about-intro {
+            margin-bottom: 60px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .about-intro-content {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .about-intro-text {
+            flex: 1;
+            padding: 40px;
+            min-width: 300px;
+        }
+        
+        .about-intro-text h3 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .about-intro-text h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 1.5px;
+        }
+        
+        .about-intro-text p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 16px;
+            color: #555;
+        }
+        
+        .about-intro-image {
+            flex: 1;
+            min-width: 300px;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .about-intro-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .about-mission {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            padding: 60px 40px;
+            border-radius: 15px;
+            margin-bottom: 60px;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
+            color: white;
+            text-align: center;
+        }
+        
+        .about-mission h3 {
+            font-size: 28px;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+        
+        .about-mission p {
+            line-height: 1.8;
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .about-values {
+            margin-bottom: 60px;
+        }
+        
+        .about-values h3 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .about-values h3::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 1.5px;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        
+        .value-card {
+            background-color: #fff;
+            padding: 40px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .value-card i {
+            font-size: 50px;
+            color: #3498db;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+        
+        .value-card:hover i {
+            transform: scale(1.1);
+        }
+        
+        .value-card h4 {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .value-card p {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .about-team {
+            background-color: #fff;
+            padding: 60px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-team h3 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .about-team h3::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 1.5px;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+        
+        .team-member {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+        
+        .team-member-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+        
+        .team-member:hover .team-member-image {
+            transform: scale(1.05);
+        }
+        
+        .team-member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .team-member h4 {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .team-member p {
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .team-member .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .team-member .social-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background-color: #f1f1f1;
+            border-radius: 50%;
+            color: #333;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .team-member .social-icon:hover {
+            background-color: #3498db;
+            color: white;
+            transform: translateY(-5px);
+        }
+        
+        @media (max-width: 992px) {
+            .values-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .about-intro-content {
+                flex-direction: column;
+            }
+            
+            .about-intro-image {
+                width: 100%;
+                height: 300px;
+            }
+            
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-mission {
+                padding: 40px 20px;
+            }
+            
+            .about-team, .about-intro-text {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>TechStore</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="products.html">Sản phẩm</a></li>
+                    <li><a href="about.html" class="active">Giới thiệu</a></li>
+                    <li><a href="contact.html">Liên hệ</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Giỏ hàng của bạn</h2>
+            <button id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div class="cart-total">
+            <h3>Tổng cộng: <span id="cart-total-price">0</span> ₫</h3>
+        </div>
+        <button id="checkout-btn">Thanh toán</button>
+    </div>
+
+    <!-- Checkout Sheet -->
+    <div class="checkout-overlay" id="checkout-overlay">
+        <div class="checkout-sheet">
+            <div class="checkout-header">
+                <h2>Hoàn tất đơn hàng</h2>
+                <button id="close-checkout">&times;</button>
+            </div>
+            <div class="checkout-content">
+                <div class="checkout-summary">
+                    <h3>Thông tin đơn hàng</h3>
+                    <div class="checkout-items">
+                        <!-- Summary of cart items will be displayed here -->
+                    </div>
+                    <div class="checkout-subtotal">
+                        <div>Tạm tính:</div>
+                        <div class="price"><span id="checkout-subtotal">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-shipping">
+                        <div>Phí vận chuyển:</div>
+                        <div class="price"><span id="checkout-shipping">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-total">
+                        <div>Tổng cộng:</div>
+                        <div class="price"><span id="checkout-total">0</span> ₫</div>
+                    </div>
+                </div>
+                <form id="checkout-form">
+                    <h3>Thông tin giao hàng</h3>
+                    <div class="form-group">
+                        <label for="full-name">Họ và tên</label>
+                        <input type="text" id="full-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Địa chỉ giao hàng</label>
+                        <textarea id="address" required rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="province">Tỉnh/Thành phố</label>
+                        <select id="province" required>
+                            <option value="">Chọn Tỉnh/Thành phố</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="district">Quận/Huyện</label>
+                        <select id="district" required disabled>
+                            <option value="">Chọn Quận/Huyện</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ward">Phường/Xã</label>
+                        <select id="ward" required disabled>
+                            <option value="">Chọn Phường/Xã</option>
+                        </select>
+                    </div>
+                    
+                    <h3>Phương thức thanh toán</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method">
+                            <input type="radio" id="cod" name="payment-method" value="cod" checked>
+                            <label for="cod">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Thanh toán khi nhận hàng</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer">
+                            <label for="bank-transfer">
+                                <i class="fas fa-university"></i>
+                                <span>Chuyển khoản ngân hàng</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="credit-card" name="payment-method" value="credit-card">
+                            <label for="credit-card">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Thẻ tín dụng/Ghi nợ</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-actions">
+                        <button type="button" id="cancel-checkout">Hủy</button>
+                        <button type="submit" id="place-order-btn">Đặt hàng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <section class="about-page">
+        <div class="container">
+            <h2 class="section-title">Giới thiệu về TechStore</h2>
+            
+            <div class="about-intro">
+                <div class="about-intro-content">
+                    <div class="about-intro-text">
+                        <h3>Chúng tôi là ai</h3>
+                        <p>TechStore là địa chỉ tin cậy cho các sản phẩm laptop chất lượng cao từ tất cả các thương hiệu hàng đầu. Chúng tôi cung cấp giá cả cạnh tranh và dịch vụ khách hàng xuất sắc để đảm bảo bạn tìm được chiếc laptop phù hợp nhất với nhu cầu của mình.</p>
+                        <p>Thành lập vào năm 2020, chúng tôi đã nhanh chóng phát triển và trở thành một trong những nhà bán lẻ công nghệ đáng tin cậy nhất trong khu vực. Với phương châm "Công nghệ cho mọi người", chúng tôi cam kết mang đến những sản phẩm công nghệ tốt nhất với giá cả hợp lý nhất.</p>
+                    </div>
+                    <div class="about-intro-image">
+                        <img src="images/store.jpg" alt="Cửa hàng TechStore">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-mission">
+                <h3>Sứ mệnh của chúng tôi</h3>
+                <p>Tại TechStore, sứ mệnh của chúng tôi là cung cấp sản phẩm công nghệ chất lượng cao với giá cả cạnh tranh, đồng thời mang đến dịch vụ khách hàng xuất sắc. Chúng tôi tin rằng công nghệ nên tiếp cận được với tất cả mọi người, đó lý do tại sao chúng tôi cung cấp nhiều dòng sản phẩm phù hợp với mọi ngân sách và nhu cầu sử dụng.</p>
+            </div>
+            
+            <div class="about-values">
+                <h3>Giá trị cốt lõi</h3>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>Chất lượng</h4>
+                        <p>Chúng tôi chỉ bán các sản phẩm đáp ứng tiêu chuẩn chất lượng nghiêm ngặt để đảm bảo sự hài lòng của khách hàng.</p>
+                    </div>
+                    <div class="value-card">
+                        <i class="fas fa-headset"></i>
+                        <h4>Dịch vụ</h4>
+                        <p>Đội ngũ nhân viên am hiểu luôn sẵn sàng tư vấn chuyên nghiệp và hỗ trợ tận tình cho khách hàng.</p>
+                    </div>
+                    <div class="value-card">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <h4>Giá trị</h4>
+                        <p>Chúng tôi đề xuất mức giá cạnh tranh và thường xuyên có các chương trình khuyến mãi để đảm bảo bạn nhận được giá trị tốt nhất.</p>
+                    </div>
+                    <div class="value-card">
+                        <i class="fas fa-sync-alt"></i>
+                        <h4>Đổi mới</h4>
+                        <p>Chúng tôi liên tục cập nhật danh mục sản phẩm để bao gồm các công nghệ đổi mới mới nhất trên thị trường.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-team">
+                <h3>Đội ngũ của chúng tôi</h3>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-member-image">
+                            <img src="images/team-member-1.jpg" alt="Nguyễn Văn An">
+                        </div>
+                        <h4>Nguyễn Văn An</h4>
+                        <p>Nhà sáng lập & CEO</p>
+                        <div class="social-links">
+                            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-member-image">
+                            <img src="images/team-member-2.jpg" alt="Trần Thị Bình">
+                        </div>
+                        <h4>Trần Thị Bình</h4>
+                        <p>Giám đốc kỹ thuật</p>
+                        <div class="social-links">
+                            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-member-image">
+                            <img src="images/team-member-3.jpg" alt="Lê Hoàng">
+                        </div>
+                        <h4>Lê Hoàng</h4>
+                        <p>Quản lý dịch vụ khách hàng</p>
+                        <div class="social-links">
+                            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TechStore. Tất cả các quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/location-selector.js"></script>
+    <script src="js/about.js"></script>
+</body>
+</html> 

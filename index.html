@@ -1,11 +1,337 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechStore - Laptop Shop</title>
+    <title>TechStore - Cửa hàng Laptop</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero {
+            position: relative;
+            height: 600px;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4)), url('images/hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            animation: zoomEffect 20s infinite alternate;
+            z-index: -1;
+        }
+        
+        @keyframes zoomEffect {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
+        
+        .hero-content {
+            padding-top: 60px;
+            max-width: 600px;
+            margin-left: 0;
+            text-align: left;
+        }
+        
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
+            font-weight: 800;
+            line-height: 1.2;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            animation: fadeInUp 1.2s ease;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+            line-height: 1.6;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            animation: fadeInUp 1.4s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.6);
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            z-index: 10;
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            background-color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .product-image {
+            height: 250px;
+            transition: all 0.5s ease;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+        
+        .product-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .product-category {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .product-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: #2c3e50;
+            min-height: 50px;
+        }
+        
+        .product-price {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .original-price {
+            font-size: 16px;
+            color: #7f8c8d;
+            text-decoration: line-through;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+        
+        .promotional-price {
+            color: #e74c3c;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .discount-badge {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 15px;
+        }
+        
+        .add-to-cart, .view-details {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .add-to-cart {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .add-to-cart:hover {
+            background: linear-gradient(135deg, #2980b9, #1a5276);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
+        }
+        
+        .view-details {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .view-details:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            position: relative;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            text-align: center;
+            font-weight: 800;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 2px;
+        }
+        
+        .about-content, .contact-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-text p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .about-image img {
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .about-image img:hover {
+            transform: scale(1.03);
+        }
+        
+        .contact-item {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .contact-item i {
+            font-size: 24px;
+            color: #3498db;
+            margin-right: 20px;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 15px;
+            border-radius: 50%;
+        }
+        
+        .contact-form input, .contact-form textarea {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-form input:focus, .contact-form textarea:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.2);
+        }
+        
+        .featured-products {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .about, .contact {
+            padding: 80px 0;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,10 +341,10 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="index.html" class="active">Home</a></li>
-                    <li><a href="products.html">Products</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="index.html" class="active">Trang chủ</a></li>
+                    <li><a href="products.html">Sản phẩm</a></li>
+                    <li><a href="about.html">Giới thiệu</a></li>
+                    <li><a href="contact.html">Liên hệ</a></li>
                 </ul>
             </nav>
             <div class="cart-icon">
@@ -30,52 +356,52 @@
 
     <div class="cart-sidebar">
         <div class="cart-header">
-            <h2>Your Cart</h2>
+            <h2>Giỏ hàng của bạn</h2>
             <button id="close-cart">&times;</button>
         </div>
         <div class="cart-items">
             <!-- Cart items will be added here dynamically -->
         </div>
         <div class="cart-total">
-            <h3>Total: <span id="cart-total-price">0</span> ₫</h3>
+            <h3>Tổng cộng: <span id="cart-total-price">0</span> ₫</h3>
         </div>
-        <button id="checkout-btn">Checkout</button>
+        <button id="checkout-btn">Thanh toán</button>
     </div>
 
     <!-- Checkout Sheet -->
     <div class="checkout-overlay" id="checkout-overlay">
         <div class="checkout-sheet">
             <div class="checkout-header">
-                <h2>Complete Your Order</h2>
+                <h2>Hoàn tất đơn hàng</h2>
                 <button id="close-checkout">&times;</button>
             </div>
             <div class="checkout-content">
                 <div class="checkout-summary">
-                    <h3>Order Summary</h3>
+                    <h3>Thông tin đơn hàng</h3>
                     <div class="checkout-items">
                         <!-- Summary of cart items will be displayed here -->
                     </div>
                     <div class="checkout-subtotal">
-                        <div>Subtotal:</div>
+                        <div>Tạm tính:</div>
                         <div class="price"><span id="checkout-subtotal">0</span> ₫</div>
                     </div>
                     <div class="checkout-shipping">
-                        <div>Shipping:</div>
+                        <div>Phí vận chuyển:</div>
                         <div class="price"><span id="checkout-shipping">0</span> ₫</div>
                     </div>
                     <div class="checkout-total">
-                        <div>Total:</div>
+                        <div>Tổng cộng:</div>
                         <div class="price"><span id="checkout-total">0</span> ₫</div>
                     </div>
                 </div>
                 <form id="checkout-form">
-                    <h3>Shipping Information</h3>
+                    <h3>Thông tin giao hàng</h3>
                     <div class="form-group">
-                        <label for="full-name">Full Name</label>
+                        <label for="full-name">Họ và tên</label>
                         <input type="text" id="full-name" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone Number</label>
+                        <label for="phone">Số điện thoại</label>
                         <input type="tel" id="phone" required>
                     </div>
                     <div class="form-group">
@@ -83,7 +409,7 @@
                         <input type="email" id="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="address">Delivery Address</label>
+                        <label for="address">Địa chỉ giao hàng</label>
                         <textarea id="address" required rows="3"></textarea>
                     </div>
                     <div class="form-group">
@@ -105,34 +431,34 @@
                         </select>
                     </div>
                     
-                    <h3>Payment Method</h3>
+                    <h3>Phương thức thanh toán</h3>
                     <div class="payment-methods">
                         <div class="payment-method">
                             <input type="radio" id="cod" name="payment-method" value="cod" checked>
                             <label for="cod">
                                 <i class="fas fa-money-bill-wave"></i>
-                                <span>Cash On Delivery</span>
+                                <span>Thanh toán khi nhận hàng</span>
                             </label>
                         </div>
                         <div class="payment-method">
                             <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer">
                             <label for="bank-transfer">
                                 <i class="fas fa-university"></i>
-                                <span>Bank Transfer</span>
+                                <span>Chuyển khoản ngân hàng</span>
                             </label>
                         </div>
                         <div class="payment-method">
                             <input type="radio" id="credit-card" name="payment-method" value="credit-card">
                             <label for="credit-card">
                                 <i class="fas fa-credit-card"></i>
-                                <span>Credit/Debit Card</span>
+                                <span>Thẻ tín dụng/Ghi nợ</span>
                             </label>
                         </div>
                     </div>
                     
                     <div class="checkout-actions">
-                        <button type="button" id="cancel-checkout">Cancel</button>
-                        <button type="submit" id="place-order-btn">Place Order</button>
+                        <button type="button" id="cancel-checkout">Hủy</button>
+                        <button type="submit" id="place-order-btn">Đặt hàng</button>
                     </div>
                 </form>
             </div>
@@ -142,35 +468,35 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h2>Find Your Perfect Laptop</h2>
-                <p>High-performance laptops for work, gaming, and everyday use</p>
-                <a href="products.html" class="btn">Shop Now</a>
+                <h2>Tìm chiếc laptop hoàn hảo của bạn</h2>
+                <p>Laptop hiệu năng cao cho công việc, chơi game và sử dụng hàng ngày với công nghệ tiên tiến và thiết kế hiện đại</p>
+                <a href="products.html" class="btn btn-primary">Mua ngay</a>
             </div>
         </div>
     </section>
 
-    <section id="products" class="products">
+    <section id="products" class="featured-products">
         <div class="container">
-            <h2 class="section-title">Featured Products</h2>
+            <h2 class="section-title">Sản phẩm nổi bật</h2>
             <div class="product-grid" id="featured-grid">
                 <!-- Featured products will be loaded dynamically via JS -->
             </div>
-            <div class="text-center" style="margin-top: 30px;">
-                <a href="products.html" class="btn">View All Products</a>
+            <div class="text-center" style="margin-top: 40px;">
+                <a href="products.html" class="btn btn-primary">Xem tất cả sản phẩm</a>
             </div>
         </div>
     </section>
 
     <section id="about" class="about">
         <div class="container">
-            <h2 class="section-title">About Us</h2>
+            <h2 class="section-title">Giới thiệu về chúng tôi</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p>TechStore is your one-stop shop for high-quality laptops from all major brands. We provide competitive prices and exceptional customer service to ensure you find the perfect laptop for your needs.</p>
-                    <p>We believe in offering a hassle-free shopping experience which is why we don't require account creation to shop with us.</p>
+                    <p>TechStore là địa chỉ tin cậy cho các dòng laptop chất lượng cao từ tất cả các thương hiệu hàng đầu. Chúng tôi cung cấp giá cả cạnh tranh và dịch vụ khách hàng xuất sắc để đảm bảo bạn tìm được chiếc laptop phù hợp nhất với nhu cầu của mình.</p>
+                    <p>Chúng tôi tin vào việc mang đến trải nghiệm mua sắm thuận tiện, đó lý do tại sao chúng tôi không yêu cầu tạo tài khoản khi mua hàng. Với đội ngũ nhân viên tư vấn chuyên nghiệp, chúng tôi sẵn sàng hỗ trợ bạn lựa chọn sản phẩm phù hợp nhất.</p>
                 </div>
                 <div class="about-image">
-                    <img src="images/store.jpg" alt="TechStore showroom">
+                    <img src="images/store.jpg" alt="Cửa hàng TechStore">
                 </div>
             </div>
         </div>
@@ -178,16 +504,16 @@
 
     <section id="contact" class="contact">
         <div class="container">
-            <h2 class="section-title">Contact Us</h2>
+            <h2 class="section-title">Liên hệ với chúng tôi</h2>
             <div class="contact-content">
                 <div class="contact-info">
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <p>123 Tech Street, Digital City</p>
+                        <p>123 đường Công Nghệ, Quận 1, TP. Hồ Chí Minh</p>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-phone"></i>
-                        <p>+1 234 567 8900</p>
+                        <p>0123 456 789</p>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
@@ -195,10 +521,10 @@
                     </div>
                 </div>
                 <form class="contact-form">
-                    <input type="text" placeholder="Your Name" required>
-                    <input type="email" placeholder="Your Email" required>
-                    <textarea placeholder="Your Message" required></textarea>
-                    <button type="submit" class="btn">Send Message</button>
+                    <input type="text" placeholder="Họ và tên" required>
+                    <input type="email" placeholder="Email" required>
+                    <textarea placeholder="Nội dung tin nhắn" required></textarea>
+                    <button type="submit" class="btn btn-primary">Gửi tin nhắn</button>
                 </form>
             </div>
         </div>
@@ -206,7 +532,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 TechStore. All Rights Reserved.</p>
+            <p>&copy; 2023 TechStore. Tất cả các quyền được bảo lưu.</p>
         </div>
     </footer>
 
@@ -232,13 +558,32 @@
                 const productCard = document.createElement('div');
                 productCard.classList.add('product-card');
                 
+                // Format the price with discount
+                const originalPrice = product.price;
+                const discountPercentage = 5; // 5% discount
+                const discountedPrice = originalPrice * (1 - discountPercentage/100);
+                
                 productCard.innerHTML = `
+                    <div class="featured-badge">Nổi bật</div>
                     <div class="product-image" style="background-image: url('${product.image}')"></div>
                     <div class="product-info">
-                        <div class="product-category">${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</div>
+                        <div class="product-category">${product.category || 'Laptop'}</div>
                         <h3 class="product-title">${product.title}</h3>
-                        <div class="product-price">$${product.price.toFixed(2)}</div>
-                        <button class="btn add-to-cart" data-id="${product.id}">Add to Cart</button>
+                        <div class="product-price">
+                            <span class="original-price">${originalPrice.toLocaleString('vi-VN')} đ</span>
+                            <div class="promotional-price">
+                                ${discountedPrice.toLocaleString('vi-VN')} đ
+                                <span class="discount-badge">-${discountPercentage}%</span>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="add-to-cart" data-id="${product.id}">
+                                <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                            </button>
+                            <a href="product-detail.html?id=${product.id}" class="view-details">
+                                <i class="fas fa-eye"></i> Chi tiết
+                            </a>
+                        </div>
                     </div>
                 `;
                 

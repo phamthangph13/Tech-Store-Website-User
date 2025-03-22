@@ -8,15 +8,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .products-banner {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('images/hero-bg.jpg');
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('images/hero-bg.jpg');
             background-size: cover;
             background-position: center;
-            height: 300px;
+            height: 320px;
             color: #fff;
             display: flex;
             align-items: center;
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             position: relative;
             overflow: hidden;
         }
@@ -28,23 +28,34 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, rgba(52, 152, 219, 0.3), rgba(41, 128, 185, 0.3));
+            background: linear-gradient(45deg, rgba(52, 152, 219, 0.5), rgba(41, 128, 185, 0.5));
             z-index: 1;
         }
         
         .products-banner h1 {
             width: 100%;
-            font-size: 48px;
+            font-size: 52px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             position: relative;
             z-index: 2;
             animation: fadeInUp 1s ease-out;
         }
         
+        .products-banner p {
+            color: #fff;
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1.2s ease-out;
+        }
+        
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -53,7 +64,7 @@
         }
         
         .product-detail {
-            margin-top: 10px;
+            margin-top: 12px;
             color: #666;
             font-size: 14px;
             line-height: 1.5;
@@ -79,7 +90,7 @@
         }
         
         .product-search:focus-within {
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.4);
             transform: translateY(-2px);
         }
         
@@ -90,35 +101,48 @@
             border-radius: 50px 0 0 50px;
             font-size: 16px;
             outline: none;
+            background-color: #f9f9f9;
         }
         
         .product-search button {
             width: 15%;
-            background: #3498db;
+            background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
             border: none;
             padding: 0 25px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
         
         .product-search button:hover {
-            background: #2980b9;
+            background: linear-gradient(135deg, #2980b9, #1a5276);
+            transform: scale(1.05);
+        }
+
+        .product-controls-wrapper {
+            background-color: #f9f9f9;
+            padding: 30px 0;
+            margin-bottom: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
         .product-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 0;
             flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         
         .product-filter {
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 0;
             flex-wrap: wrap;
+            gap: 10px;
         }
 
         .product-sort {
@@ -126,17 +150,21 @@
             align-items: center;
             position: relative;
             margin-right: 20px;
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 5px 15px;
         }
         
         .sort-label {
             margin-right: 10px;
             font-weight: 500;
-            color: #555;
+            color: #444;
         }
 
         .sort-select {
             padding: 10px 35px 10px 15px;
-            border: 2px solid #e0e0e0;
+            border: none;
             border-radius: 30px;
             background-color: white;
             font-size: 14px;
@@ -149,21 +177,20 @@
         }
         
         .sort-select:focus {
-            border-color: #3498db;
+            color: #3498db;
         }
         
         .sort-icon {
             position: absolute;
-            right: 15px;
+            right: 20px;
             pointer-events: none;
             color: #3498db;
         }
         
         .filter-btn {
-            background: none;
-            border: 2px solid #3498db;
+            background: white;
+            border: 2px solid #e0e0e0;
             padding: 10px 20px;
-            margin: 5px;
             border-radius: 30px;
             cursor: pointer;
             font-size: 15px;
@@ -171,16 +198,25 @@
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         
         .filter-btn i {
-            margin-right: 5px;
+            margin-right: 8px;
             font-size: 14px;
         }
         
-        .filter-btn:hover, .filter-btn.active {
-            background: #3498db;
+        .filter-btn:hover {
+            background: #f0f8ff;
+            border-color: #3498db;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, #3498db, #2980b9);
             color: #fff;
+            border-color: transparent;
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
         }
@@ -189,6 +225,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 35px;
+            margin-top: 40px;
         }
         
         .product-card {
@@ -198,6 +235,9 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             transition: transform 0.4s ease, box-shadow 0.4s ease;
             position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         
         .product-card:hover {
@@ -211,6 +251,11 @@
             background-position: center;
             position: relative;
             overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.05);
         }
         
         .product-image::after {
@@ -227,19 +272,23 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            background: rgba(52, 152, 219, 0.9);
+            background: linear-gradient(135deg, #3498db, #2980b9);
             color: #fff;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
         }
 
         .product-info {
             padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
         
         .product-title {
@@ -273,71 +322,121 @@
             color: #e74c3c;
             font-size: 22px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
         }
         
         .discount-badge {
-            background-color: #e74c3c;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
             font-size: 12px;
             font-weight: bold;
-            padding: 3px 8px;
+            padding: 4px 8px;
             border-radius: 10px;
             margin-left: 8px;
             display: inline-block;
+            box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
         }
         
-        .add-to-cart {
-            width: 100%;
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 15px;
+        }
+        
+        .add-to-cart, .view-details {
+            flex: 1;
             padding: 12px;
             border-radius: 8px;
             font-weight: 600;
-            letter-spacing: 0.5px;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
             transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .add-to-cart {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
         }
         
         .add-to-cart:hover {
-            background: #2980b9;
+            background: linear-gradient(135deg, #2980b9, #1a5276);
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
         }
         
-        .add-to-cart i {
-            font-size: 16px;
+        .view-details {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .view-details:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
         .no-results {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 50px 0;
+            padding: 80px 0;
             color: #7f8c8d;
             font-size: 18px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            margin-top: 30px;
         }
         
         .no-results i {
-            font-size: 48px;
-            margin-bottom: 15px;
+            font-size: 60px;
+            margin-bottom: 20px;
             color: #bdc3c7;
+        }
+        
+        .no-results .btn {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .no-results .btn:hover {
+            background: linear-gradient(135deg, #2980b9, #1a5276);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
         }
         
         @media (max-width: 992px) {
             .product-controls {
                 flex-direction: column;
                 align-items: center;
+                gap: 20px;
             }
             
             .product-sort {
                 margin-right: 0;
-                margin-bottom: 20px;
             }
         }
         
         @media (max-width: 768px) {
             .products-banner h1 {
-                font-size: 36px;
+                font-size: 42px;
+            }
+            
+            .products-banner p {
+                font-size: 16px;
+                padding: 0 20px;
             }
             
             .product-search input {
@@ -360,11 +459,19 @@
             }
             
             .products-banner {
-                height: 200px;
+                height: 250px;
             }
             
             .products-banner h1 {
-                font-size: 28px;
+                font-size: 32px;
+            }
+            
+            .products-banner p {
+                font-size: 14px;
+            }
+            
+            .product-controls-wrapper {
+                padding: 20px 0;
             }
         }
 
@@ -382,70 +489,6 @@
         .product-title-link:hover .product-title {
             color: #3498db;
         }
-
-        .product-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .add-to-cart, .view-details {
-            flex: 1;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-        }
-
-        .view-details {
-            background-color: #f8f9fa;
-            color: #2c3e50;
-            border: 2px solid #e0e0e0;
-        }
-
-        .view-details:hover {
-            background-color: #ecf0f1;
-            border-color: #bdc3c7;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 30px;
-            background-color: rgba(52, 152, 219, 0.9);
-            color: white;
-            border-radius: 5px;
-            font-weight: 500;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: none;
-            text-align: center;
-            animation: fadeIn 0.3s;
-        }
-        
-        .notification.warning {
-            background-color: rgba(241, 196, 15, 0.9);
-            color: #333;
-        }
-        
-        .notification.error {
-            background-color: rgba(231, 76, 60, 0.9);
-        }
-        
-        .notification.success {
-            background-color: rgba(46, 204, 113, 0.9);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -20px); }
-            to { opacity: 1; transform: translate(-50%, 0); }
-        }
     </style>
 </head>
 <body>
@@ -458,8 +501,8 @@
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="products.html" class="active">Products</a></li>
-                    <li><a href="index.html#about">About</a></li>
-                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
             <div class="cart-icon">
@@ -581,7 +624,10 @@
     </div>
 
     <div class="products-banner">
-        <h1>Our Laptop Collection</h1>
+        <div class="container">
+            <h1>Our Laptop Collection</h1>
+            <p>Discover high-performance laptops for work, gaming, and everyday computing needs</p>
+        </div>
     </div>
 
     <section class="products">
@@ -591,22 +637,26 @@
                 <button id="search-btn"><i class="fas fa-search"></i></button>
             </div>
             
-            <div class="product-controls">
-                <div class="product-filter" id="category-filter">
-                    <!-- Category buttons will be loaded dynamically -->
-                    <button class="filter-btn active" data-category="all"><i class="fas fa-laptop"></i> All</button>
-                </div>
-                
-                <div class="product-sort">
-                    <span class="sort-label">Sort by:</span>
-                    <select class="sort-select" id="sort-select">
-                        <option value="default">Default</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="name-asc">Name: A to Z</option>
-                        <option value="name-desc">Name: Z to A</option>
-                    </select>
-                    <i class="fas fa-chevron-down sort-icon"></i>
+            <div class="product-controls-wrapper">
+                <div class="container">
+                    <div class="product-controls">
+                        <div class="product-filter" id="category-filter">
+                            <!-- Category buttons will be loaded dynamically -->
+                            <button class="filter-btn active" data-category="all"><i class="fas fa-laptop"></i> All</button>
+                        </div>
+                        
+                        <div class="controls-right">
+                            <div class="product-sort">
+                                <span class="sort-label">Sort by:</span>
+                                <select class="sort-select" id="sort-select">
+                                    <option value="default">Default</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                </select>
+                                <i class="fas fa-chevron-down sort-icon"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
