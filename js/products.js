@@ -522,8 +522,15 @@ function getCategoryFromIds(categoryIds) {
         }
     }
     
+    // If we reach here, no matching category was found
     console.warn('No matching category found for IDs:', categoryIds);
-    return 'uncategorized';
+    
+    // Return the string value of the first category ID as fallback
+    // This ensures we at least have something to display/filter by
+    const firstCategoryId = categoryIds[0];
+    return typeof firstCategoryId === 'object' && firstCategoryId.name 
+        ? firstCategoryId.name.toLowerCase().replace(/\s+/g, '-')
+        : 'uncategorized';
 }
 
 // Helper function to generate a description from product specs
@@ -625,7 +632,35 @@ async function fetchCategories() {
 
 // Load initial data
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize with all products
+    // First, load categories and populate filter buttons
+    const categoryFilter = document.getElementById('category-filter');
+    
+    if (categoryFilter) {
+        fetchCategories().then(result => {
+            // Clear existing buttons (keep the container)
+            categoryFilter.innerHTML = '';
+            
+            // Add each category button
+            result.categories.forEach(category => {
+                const button = document.createElement('button');
+                button.classList.add('filter-btn');
+                if (category.slug === 'all') {
+                    button.classList.add('active');
+                }
+                button.setAttribute('data-category', category.slug);
+                button.innerHTML = `<i class="fas ${category.icon}"></i> ${category.name}`;
+                categoryFilter.appendChild(button);
+            });
+            
+            // Update global category mapping for product display
+            console.log("Category mapping updated");
+        }).catch(error => {
+            console.error('Error loading categories:', error);
+            // Keep default "All" button if categories fail to load
+        });
+    }
+    
+    // Then initialize with all products
     fetchProducts().then(result => {
         products = result.products;
         console.log('Products loaded:', products ? products.length : 0, 'items');

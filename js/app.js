@@ -214,10 +214,19 @@ function displayProducts(category) {
         productCard.innerHTML = `
             <div class="product-image" style="background-image: url('${product.image}')"></div>
             <div class="product-info">
-                <div class="product-category">${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</div>
-                <h3 class="product-title">${product.title}</h3>
+                <div class="product-category">${product.category ? product.category.charAt(0).toUpperCase() + product.category.slice(1) : 'Uncategorized'}</div>
+                <a href="product-detail.html?id=${product.id}" class="product-title-link">
+                    <h3 class="product-title">${product.title}</h3>
+                </a>
                 ${priceHTML}
-                <button class="btn add-to-cart" data-id="${product.id}">Add to Cart</button>
+                <div class="product-actions">
+                    <button class="btn add-to-cart" data-id="${product.id}">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <a href="product-detail.html?id=${product.id}" class="btn view-details">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                </div>
             </div>
         `;
         
@@ -232,18 +241,19 @@ function displayProducts(category) {
 }
 
 // Filter products by category
-filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const filter = button.getAttribute('data-filter');
-        
-        // Update active filter button
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        
-        // Display filtered products
-        displayProducts(filter);
-    });
-});
+function filterProducts(event) {
+    // Remove active class from all buttons
+    filterButtons.forEach(btn => btn.classList.remove('active'));
+    
+    // Add active class to clicked button
+    event.currentTarget.classList.add('active');
+    
+    // Get the category from the button's data attribute
+    const category = event.currentTarget.dataset.category;
+    
+    // Display products of the selected category
+    displayProducts(category);
+}
 
 // Function to open cart sidebar
 function openCart() {

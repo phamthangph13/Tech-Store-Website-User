@@ -1,168 +1,186 @@
-# TechStore Laptop Shop
+# Order API Documentation
 
-A responsive e-commerce website for selling laptops, built with HTML, CSS, and vanilla JavaScript.
+This document describes the endpoints for managing orders in the system.
 
-## Features
+## Collection Schema: Orders
 
-- Responsive design that works on desktop and mobile devices
-- Product catalog with filtering by category (Gaming, Business, Ultrabook)
-- Shopping cart functionality with the ability to add, remove, and update quantities
-- Cart data persisted in localStorage
-- No login or registration required to shop
-- Checkout process
-
-## Usage
-
-Simply open `index.html` in a web browser to start using the website.
-
-## Product Images
-
-The website uses placeholder images if real images are not available. To add real product images, place them in the `images` directory with the appropriate filenames (see the `.placeholder` file in the images directory for the required filenames).
-
-## Technologies Used
-
-- HTML5
-- CSS3 (with Flexbox and CSS Grid)
-- Vanilla JavaScript
-- localStorage for cart persistence
-
-## Future Improvements
-
-- Add search functionality
-- Implement responsive images for better performance
-- Add more detailed product pages
-- Create a checkout form for collecting shipping information
-
-
-[{
-  "_id": {
-    "$oid": "67de059601850c8a5c10fe51"
+```javascript
+{
+  _id: ObjectId,
+  orderNumber: String, // TS-YYYYMMDD-XXX
+  customer: {
+    fullName: String,
+    phone: String,
+    email: String
   },
-  "name": "Laptop Dell XPS 15",
-  "brand": "Dell",
-  "model": "XPS 15 9530",
-  "price": "29000000",
-  "discount_percent": "5",
-  "stock_quantity": "10",
-  "short_description": "feafaef",
-  "status": "available",
-  "specs": {
-    "cpu": "Intel Core i7-13700H",
-    "ram": "16GB DDR5",
-    "storage": "512GB NVMe SSD",
-    "display": "15.6 inch 4K OLED",
-    "gpu": "NVIDIA RTX 4060 6GB",
-    "battery": "86Wh",
-    "os": "Windows 11 Pro",
-    "ports": [
-      "USB-C"
-    ]
+  shippingAddress: {
+    province: String,
+    district: String,
+    ward: String,
+    streetAddress: String
   },
-  "category_ids": [
-    "67ddfd25c729a5032d685992"
-  ],
-  "highlights": [
-    "[\"[\\\"[\\\\\\\"[\\\\\\\\\\\\\\\"feafea\\\\\\\\\\\\\\\"]\\\\\\\"]\\\"]\"]"
-  ],
-  "product_info": [
+  items: [
     {
-      "title": "feafae",
-      "content": "aefaef"
-    }
-  ],
-  "variant_specs": [
-    {
-      "name": "Hight Performance",
-      "specs": {
-        "cpu": "I9",
-        "ram": "32GB",
-        "storage": "1TB",
-        "display": "15 Inch",
-        "gpu": "GTX 1660 TI",
-        "battery": "129KW",
-        "os": "wFA",
-        "ports": [
-          "fsa"
-        ]
+      productId: ObjectId,
+      productName: String,
+      basePrice: Number,
+      
+      // Variant selection (configuration)
+      variantName: String,          // e.g., "APPLE M3"
+      variantSpecs: {
+        cpu: String,
+        ram: String,
+        storage: String,
+        display: String,
+        gpu: String,
+        battery: String,
+        os: String,
+        ports: [String]
       },
-      "price": 2000000,
-      "discount_percent": 0
-    },
-    {
-      "name": "feafeafea",
-      "specs": {
-        "cpu": "aefaef",
-        "ram": "gaegfae",
-        "storage": "aefaef",
-        "display": "faefae",
-        "gpu": "aefae",
-        "battery": "aefaef",
-        "os": "aefaef",
-        "ports": [
-          "aefae"
-        ]
-      },
-      "price": 92525252,
-      "discount_percent": 20
+      variantPrice: Number,         // Price specific to variant
+      variantDiscountPercent: Number,
+      
+      // Color selection
+      colorName: String,            // e.g., "Silver", "Black"
+      colorCode: String,            // e.g., "#cfc9c9"
+      colorPriceAdjustment: Number, // Additional cost for this color
+      colorDiscountAdjustment: Number,
+      
+      quantity: Number,
+      
+      // Price calculations
+      unitPrice: Number,            // Final unit price after variant and color
+      discountedPrice: Number,      // Price after discount
+      subtotal: Number,             // discountedPrice * quantity
+      
+      // Product image for order reference
+      thumbnailUrl: String
     }
   ],
-  "colors": [
+  payment: {
+    method: String,                 // "COD"
+    status: String                  // "pending", "paid"
+  },
+  productInfo: [                    // Copy of product_info for order record
     {
-      "name": "Grey",
-      "code": "#b1a0a0",
-      "price_adjustment": 150000,
-      "discount_adjustment": 0,
-      "images": []
-    },
-    {
-      "name": "Black",
-      "code": "#000000",
-      "price_adjustment": 0,
-      "discount_adjustment": 0,
-      "images": []
-    },
-    {
-      "name": "Red",
-      "code": "#de0d0d",
-      "price_adjustment": 50000,
-      "discount_adjustment": 0,
-      "images": []
+      title: String,
+      content: String
     }
   ],
-  "thumbnail_filename": "text_ng_n_7__2_176.webp",
-  "thumbnail_content_type": "image/webp",
-  "image_filename_0": "text_ng_n_7__2_176.webp",
-  "image_content_type_0": "image/webp",
-  "image_filename_1": "text_ng_n_4__7_24.webp",
-  "image_content_type_1": "image/webp",
-  "image_filename_2": "text_ng_n_1__7_45.webp",
-  "image_content_type_2": "image/webp",
-  "image_count": "4",
-  "video_filename_0": "snaptik.vn_1c6b2.mp4",
-  "video_content_type_0": "video/mp4",
-  "video_filename_1": "snaptik.vn_5f80e.mp4",
-  "video_content_type_1": "video/mp4",
-  "video_count": "2",
-  "images": [
-    "67de06eb01850c8a5c10fe5c",
-    "67de06eb01850c8a5c10fe5e",
-    "67de06eb01850c8a5c10fe60",
-    "67de06eb01850c8a5c10fe62"
-  ],
-  "videos": [
-    "67de059601850c8a5c10fe00",
-    "67de059601850c8a5c10fe34"
-  ],
-  "thumbnail": "67de059601850c8a5c10fdf8",
-  "created_at": {
-    "$date": "2025-03-22T00:34:30.577Z"
-  },
-  "updated_at": {
-    "$date": "2025-03-22T00:40:11.011Z"
-  },
-  "discount_price": 27550000,
-  "image_content_type_3": "image/webp",
-  "image_filename_3": "apple-macbook-pro-14-16-inch-jpeg-b2dc7a7d-d44c-4d26-ad51-a97756e6e9a7.webp"
-}]
+  subtotal: Number,                 // Sum of all item subtotals
+  discountTotal: Number,            // Total discount amount
+  shippingFee: Number,
+  total: Number,                    // subtotal + shippingFee
+  status: String,                   // "pending", "processing", "shipped", "delivered", "cancelled"
+  orderDate: Date,
+  updatedAt: Date
+}
+```
 
-Đây là cấu trúc của một product. ở product-detail.html và phần css hãy làm cho hợp lý và đầy đủ với dữ liệu demo nhé. Còn trên chỉ là example thôi
+## Endpoints
+
+### Create Order
+
+Creates a new order in the system.
+
+**URL**: `/api/orders`
+
+**Method**: `POST`
+
+**Auth required**: No
+
+**Request Body**:
+
+```json
+{
+  "customer": {
+    "fullName": "Nguyễn Văn A",
+    "phone": "0901234567",
+    "email": "nguyenvana@example.com"
+  },
+  "shippingAddress": {
+    "province": "Hồ Chí Minh",
+    "district": "Quận 1",
+    "ward": "Phường Bến Nghé",
+    "streetAddress": "123 Nguyễn Huệ"
+  },
+  "items": [
+    {
+      "productId": "67deaf2d7457268626f9e0eb",
+      "quantity": 1,
+      "variantName": "APPLE M3",
+      "colorName": "Silver"
+    }
+  ],
+  "payment": {
+    "method": "COD"
+  }
+}
+```
+
+#### Success Response
+
+**Code**: `201 CREATED`
+
+**Content example**:
+
+```json
+{
+  "success": true,
+  "message": "Order created successfully",
+  "data": {
+    "orderId": "60d21b4667d0d8992e610c85",
+    "orderNumber": "TS-20230724-001",
+    "items": [
+      {
+        "productName": "MacBook Pro 16",
+        "variantName": "APPLE M3",
+        "colorName": "Silver",
+        "quantity": 1,
+        "unitPrice": 75170000,
+        "discountedPrice": 71411500,
+        "subtotal": 71411500
+      }
+    ],
+    "subtotal": 71411500,
+    "shippingFee": 0,
+    "total": 71411500,
+    "status": "pending"
+  }
+}
+```
+
+#### Error Response
+
+**Condition**: If the request is invalid or validation fails.
+
+**Code**: `400 BAD REQUEST`
+
+**Content example**:
+
+```json
+{
+  "success": false,
+  "message": "Failed to create order",
+  "errors": [
+    "Product not found",
+    "Requested variant not available for product MacBook Pro 16",
+    "Requested color not available for product MacBook Pro 16"
+  ]
+}
+```
+
+### Notes
+
+1. The API automatically sets quantity to 1 if an invalid (zero or negative) quantity is provided.
+2. The final price calculation includes:
+   - Base product price (from product.price)
+   - Variant price (additional cost for the specific variant)
+   - Color price adjustment (additional cost for the specific color)
+   - Discounts from both variant and color
+3. All product information needed for the order is stored with the order at creation time, including:
+   - Product details
+   - Variant specifications
+   - Color information
+   - Pricing details
+4. Shipping is currently set to free (0 VND) for all orders. 
