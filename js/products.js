@@ -121,7 +121,9 @@ async function fetchProducts(options = {}) {
                 id: product._id,
                 title: product.name,
                 category: getCategoryFromIds(product.category_ids),
-                price: product.price / 100, // Assuming price is in cents
+                price: product.price *1, // Assuming price is in cents
+                discount_percent: product.discount_percent || 0,
+                discount_price: product.discount_price ? product.discount_price *1 : null, // Apply the same conversion
                 image: product.thumbnail ? `${API_BASE_URL}/products/files/${product.thumbnail}` : 'images/default-laptop.jpg',
                 description: getProductDescription(product)
             }));
@@ -194,6 +196,19 @@ async function fetchProducts(options = {}) {
                         filteredProducts.sort((a, b) => a.id - b.id);
                 }
             }
+            
+            // Add discount information to sample data
+            filteredProducts = filteredProducts.map(product => {
+                if (!product.hasOwnProperty('discount_percent')) {
+                    product.discount_percent = 0;
+                }
+                
+                if (!product.hasOwnProperty('discount_price') && product.discount_percent > 0) {
+                    product.discount_price = product.price - (product.price * product.discount_percent / 100);
+                }
+                
+                return product;
+            });
             
             // Set the products variable to our filtered sample data
             products = filteredProducts;

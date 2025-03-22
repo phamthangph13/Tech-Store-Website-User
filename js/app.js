@@ -51,6 +51,35 @@ function displayProducts(category) {
         : products.filter(product => product.category === category);
     
     filteredProducts.forEach(product => {
+        // Calculate prices
+        const originalPrice = product.price;
+        const discountPercent = product.discount_percent || 0;
+        const promotionalPrice = product.discount_price || originalPrice;
+        
+        // Format prices for display
+        const formattedOriginalPrice = parseInt(originalPrice).toLocaleString('vi-VN');
+        const formattedPromotionalPrice = parseInt(promotionalPrice).toLocaleString('vi-VN');
+        
+        // Create price HTML based on whether there's a discount
+        let priceHTML = '';
+        if (discountPercent > 0) {
+            priceHTML = `
+                <div class="product-price">
+                    <div class="original-price">${formattedOriginalPrice} ₫</div>
+                    <div class="promotional-price">
+                        ${formattedPromotionalPrice} ₫
+                        <span class="discount-badge">-${discountPercent}%</span>
+                    </div>
+                </div>
+            `;
+        } else {
+            priceHTML = `
+                <div class="product-price">
+                    <div class="promotional-price">${formattedOriginalPrice} ₫</div>
+                </div>
+            `;
+        }
+        
         const productCard = document.createElement('div');
         productCard.classList.add('product-card');
         
@@ -59,7 +88,7 @@ function displayProducts(category) {
             <div class="product-info">
                 <div class="product-category">${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</div>
                 <h3 class="product-title">${product.title}</h3>
-                <div class="product-price">$${product.price.toFixed(2)}</div>
+                ${priceHTML}
                 <button class="btn add-to-cart" data-id="${product.id}">Add to Cart</button>
             </div>
         `;
@@ -102,6 +131,10 @@ function addToCart(event) {
     const productId = parseInt(event.target.getAttribute('data-id'));
     const product = products.find(p => p.id === productId);
     
+    // Use the discounted price if available
+    const price = product.discount_price && product.discount_percent > 0 ? 
+        product.discount_price : product.price;
+    
     // Check if item is already in cart
     const existingItem = cart.find(item => item.id === productId);
     
@@ -111,7 +144,9 @@ function addToCart(event) {
         cart.push({
             id: product.id,
             title: product.title,
-            price: product.price,
+            price: price,
+            original_price: product.price,
+            discount_percent: product.discount_percent || 0,
             image: product.image,
             quantity: 1,
             variant: 'Standard', // Default variant
@@ -150,12 +185,29 @@ function updateCart() {
                 variantDisplay = `<div class="cart-item-options">${variantInfo} ${colorInfo}</div>`;
             }
             
+            // Format prices for display
+            const formattedPrice = parseInt(item.price).toLocaleString('vi-VN');
+            const formattedOriginalPrice = item.original_price ? parseInt(item.original_price).toLocaleString('vi-VN') : '';
+            
+            // Create price HTML based on whether there's a discount
+            let priceHTML = '';
+            if (item.discount_percent > 0 && item.original_price && item.price < item.original_price) {
+                priceHTML = `
+                    <div class="cart-item-price">
+                        <div class="original-price" style="font-size: 12px;">${formattedOriginalPrice} ₫</div>
+                        <div>${formattedPrice} ₫ <span class="discount-badge">-${item.discount_percent}%</span></div>
+                    </div>
+                `;
+            } else {
+                priceHTML = `<div class="cart-item-price">${formattedPrice} ₫</div>`;
+            }
+            
             cartItem.innerHTML = `
                 <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
                 <div class="cart-item-details">
                     <h4 class="cart-item-title">${item.title}</h4>
                     ${variantDisplay}
-                    <div class="cart-item-price">₫${parseInt(item.price).toLocaleString()}</div>
+                    ${priceHTML}
                     <div class="cart-item-quantity">
                         <button class="quantity-btn decrease" data-id="${item.id}" data-variant="${item.variant || ''}" data-color="${item.color || ''}">-</button>
                         <span class="quantity-value">${item.quantity}</span>
@@ -171,7 +223,7 @@ function updateCart() {
     
     // Update total price
     const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    cartTotalPrice.textContent = parseInt(totalPrice).toLocaleString();
+    cartTotalPrice.textContent = parseInt(totalPrice).toLocaleString('vi-VN');
     
     // Add event listeners for quantity buttons and remove buttons
     const decreaseButtons = document.querySelectorAll('.decrease');

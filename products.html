@@ -257,13 +257,33 @@
             margin: 15px 0;
             display: flex;
             align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
         }
         
-        .product-price::before {
-            content: '$';
+        .original-price {
             font-size: 16px;
-            margin-right: 2px;
-            font-weight: 600;
+            color: #7f8c8d;
+            text-decoration: line-through;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+        
+        .promotional-price {
+            color: #e74c3c;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .discount-badge {
+            background-color: #e74c3c;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            display: inline-block;
         }
         
         .add-to-cart {
@@ -458,7 +478,7 @@
             <!-- Cart items will be added here dynamically -->
         </div>
         <div class="cart-total">
-            <h3>Total: $<span id="cart-total-price">0</span></h3>
+            <h3>Total: <span id="cart-total-price">0</span> ₫</h3>
         </div>
         <button id="checkout-btn">Checkout</button>
     </div>
@@ -645,6 +665,35 @@
                     const productCard = document.createElement('div');
                     productCard.classList.add('product-card');
                     
+                    // Calculate prices in VND
+                    const originalPrice = product.price;
+                    const discountPercent = product.discount_percent || 0;
+                    const promotionalPrice = product.discount_price || originalPrice;
+                    
+                    // Format prices with VND
+                    const formattedOriginalPrice = parseInt(originalPrice).toLocaleString('vi-VN');
+                    const formattedPromotionalPrice = parseInt(promotionalPrice).toLocaleString('vi-VN');
+                    
+                    // Create price HTML based on whether there's a discount
+                    let priceHTML = '';
+                    if (discountPercent > 0) {
+                        priceHTML = `
+                            <div class="product-price">
+                                <div class="original-price">${formattedOriginalPrice} ₫</div>
+                                <div class="promotional-price">
+                                    ${formattedPromotionalPrice} ₫
+                                    <span class="discount-badge">-${discountPercent}%</span>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        priceHTML = `
+                            <div class="product-price">
+                                <div class="promotional-price">${formattedOriginalPrice} ₫</div>
+                            </div>
+                        `;
+                    }
+                    
                     productCard.innerHTML = `
                         <a href="product-detail.html?id=${product.id}" class="product-link">
                             <div class="product-image" style="background-image: url('${product.image}')">
@@ -656,7 +705,7 @@
                                 <h3 class="product-title">${product.title}</h3>
                             </a>
                             <div class="product-detail">${product.description}</div>
-                            <div class="product-price">${product.price.toFixed(2)}</div>
+                            ${priceHTML}
                             <div class="product-actions">
                                 <button class="btn add-to-cart" data-id="${product.id}">
                                     <i class="fas fa-shopping-cart"></i> Add to Cart
