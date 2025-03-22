@@ -1632,7 +1632,7 @@
                             };
                             
                             // Add to cart
-                            addToCart(cartItem);
+                            addProductToCart(cartItem);
                             
                             // Show notification
                             showNotification(`${product.name} added to your cart!`);
@@ -1730,7 +1730,7 @@
                         const productId = this.dataset.id;
                         const product = products.find(p => p.id === productId);
                         if (product) {
-                            addToCart({
+                            addProductToCart({
                                 id: product.id,
                                 title: product.title,
                                 variant: 'Standard',
@@ -1747,7 +1747,7 @@
             }
             
             // Function to add item to cart
-            function addToCart(item) {
+            function addProductToCart(item) {
                 console.log('Adding to cart:', item);
                 
                 // Ensure the item has all required properties

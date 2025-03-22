@@ -15,11 +15,32 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
-    displayProducts('all');
+    // Only try to display products if we're on a page with a product grid
+    if (productGrid) {
+        displayProducts('all');
+    }
+    
     updateCart();
     
     // Add missing product images with placeholder
     addPlaceholderImages();
+    
+    // Setup event listeners for cart icon if it exists
+    if (cartIcon) {
+        cartIcon.addEventListener('click', openCart);
+    }
+    
+    // Setup event listeners for close cart button if it exists
+    if (closeCartBtn) {
+        closeCartBtn.addEventListener('click', closeCart);
+    }
+    
+    // Setup event listeners for filter buttons if they exist
+    if (filterButtons && filterButtons.length > 0) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', filterProducts);
+        });
+    }
 });
 
 // Function to add placeholder images for products
@@ -44,6 +65,12 @@ function addPlaceholderImages() {
 
 // Display products in the grid
 function displayProducts(category) {
+    // Check if the product grid exists (might not on pages like product-detail)
+    if (!productGrid) {
+        console.log('Product grid not found, likely on a different page.');
+        return; // Exit the function to prevent errors
+    }
+    
     productGrid.innerHTML = '';
     
     const filteredProducts = category === 'all' 
@@ -128,23 +155,12 @@ closeCartBtn.addEventListener('click', () => {
 
 // Enhanced notification system
 function showNotification(message, type = 'success', duration = 3000) {
-    // Clear any existing notification
-    if (notification.classList.contains('show')) {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            createNotification(message, type, duration);
-        }, 300);
-    } else {
-        createNotification(message, type, duration);
-    }
-}
-
-function createNotification(message, type, duration) {
-    // Clear previous notification content
-    notification.innerHTML = '';
+    if (!notification) return;
     
-    // Reset classes and add type class
+    // Clear any existing notification
+    notification.innerHTML = '';
     notification.className = 'notification';
+    
     notification.classList.add(type);
     
     // Add icon based on notification type
@@ -241,85 +257,89 @@ function addToCart(event) {
 
 // Update cart display
 function updateCart() {
-    // Update cart count
-    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    cartCount.textContent = totalItems;
-    
-    // Update cart items
-    cartItemsContainer.innerHTML = '';
-    
-    if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
-    } else {
-        cart.forEach(item => {
-            const cartItem = document.createElement('div');
-            cartItem.classList.add('cart-item');
-            
-            // Display variant and color info if they exist
-            const variantInfo = item.variant && item.variant !== 'Standard' ? `<span class="cart-item-variant">${item.variant}</span>` : '';
-            const colorInfo = item.color && item.color !== 'Default' ? `<span class="cart-item-color">${item.color}</span>` : '';
-            
-            let variantDisplay = '';
-            if (variantInfo || colorInfo) {
-                variantDisplay = `<div class="cart-item-options">${variantInfo} ${colorInfo}</div>`;
-            }
-            
-            // Format prices for display
-            const formattedPrice = parseInt(item.price).toLocaleString('vi-VN');
-            const formattedOriginalPrice = item.original_price ? parseInt(item.original_price).toLocaleString('vi-VN') : '';
-            
-            // Create price HTML based on whether there's a discount
-            let priceHTML = '';
-            if (item.discount_percent > 0 && item.original_price && item.price < item.original_price) {
-                priceHTML = `
-                    <div class="cart-item-price">
-                        <div class="original-price" style="font-size: 12px;">${formattedOriginalPrice} ₫</div>
-                        <div>${formattedPrice} ₫ <span class="discount-badge">-${item.discount_percent}%</span></div>
-                    </div>
-                `;
-            } else {
-                priceHTML = `<div class="cart-item-price">${formattedPrice} ₫</div>`;
-            }
-            
-            cartItem.innerHTML = `
-                <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
-                <div class="cart-item-details">
-                    <h4 class="cart-item-title">${item.title}</h4>
-                    ${variantDisplay}
-                    ${priceHTML}
-                    <div class="cart-item-quantity">
-                        <button class="quantity-btn decrease" data-id="${item.id}" data-variant="${item.variant || ''}" data-color="${item.color || ''}">-</button>
-                        <span class="quantity-value">${item.quantity}</span>
-                        <button class="quantity-btn increase" data-id="${item.id}" data-variant="${item.variant || ''}" data-color="${item.color || ''}">+</button>
-                        <button class="remove-item" data-id="${item.id}" data-variant="${item.variant || ''}" data-color="${item.color || ''}">Remove</button>
-                    </div>
-                </div>
-            `;
-            
-            cartItemsContainer.appendChild(cartItem);
-        });
+    // Update cart count if the element exists
+    if (cartCount) {
+        const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+        cartCount.textContent = totalItems;
     }
     
-    // Update total price
-    const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    cartTotalPrice.textContent = parseInt(totalPrice).toLocaleString('vi-VN');
-    
-    // Add event listeners for quantity buttons and remove buttons
-    const decreaseButtons = document.querySelectorAll('.decrease');
-    const increaseButtons = document.querySelectorAll('.increase');
-    const removeButtons = document.querySelectorAll('.remove-item');
-    
-    decreaseButtons.forEach(button => {
-        button.addEventListener('click', decreaseQuantity);
-    });
-    
-    increaseButtons.forEach(button => {
-        button.addEventListener('click', increaseQuantity);
-    });
-    
-    removeButtons.forEach(button => {
-        button.addEventListener('click', removeItem);
-    });
+    // Only try to update cart items if the container exists
+    if (cartItemsContainer) {
+        cartItemsContainer.innerHTML = '';
+        
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+        } else {
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                
+                // Display variant and color info if they exist
+                const variantInfo = item.variant && item.variant !== 'Standard' ? `<span class="cart-item-variant">${item.variant}</span>` : '';
+                const colorInfo = item.color && item.color !== 'Default' ? `<span class="cart-item-color">${item.color}</span>` : '';
+                
+                let variantDisplay = '';
+                if (variantInfo || colorInfo) {
+                    variantDisplay = `<div class="cart-item-options">${variantInfo} ${colorInfo}</div>`;
+                }
+                
+                // Format prices for display
+                const formattedPrice = parseInt(item.price).toLocaleString('vi-VN');
+                const formattedOriginalPrice = item.original_price ? parseInt(item.original_price).toLocaleString('vi-VN') : '';
+                
+                // Create price HTML based on whether there's a discount
+                let priceHTML = '';
+                if (item.discount_percent > 0 && item.original_price && item.price < item.original_price) {
+                    priceHTML = `
+                        <div class="cart-item-price">
+                            <div class="original-price" style="font-size: 12px;">${formattedOriginalPrice} ₫</div>
+                            <div>${formattedPrice} ₫ <span class="discount-badge">-${item.discount_percent}%</span></div>
+                        </div>
+                    `;
+                } else {
+                    priceHTML = `<div class="cart-item-price">${formattedPrice} ₫</div>`;
+                }
+                
+                cartItem.innerHTML = `
+                    <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+                    <div class="cart-item-details">
+                        <h4 class="cart-item-title">${item.title}</h4>
+                        ${variantDisplay}
+                        ${priceHTML}
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn decrease" data-id="${item.id}" data-variant="${item.variant || ''}" data-color="${item.color || ''}">-</button>
+                            <span class="quantity-value">${item.quantity}</span>
+                            <button class="quantity-btn increase" data-id="${item.id}" data-variant="${item.variant || ''}" data-color="${item.color || ''}">+</button>
+                            <button class="remove-item" data-id="${item.id}" data-variant="${item.variant || ''}" data-color="${item.color || ''}">Remove</button>
+                        </div>
+                    </div>
+                `;
+                
+                cartItemsContainer.appendChild(cartItem);
+            });
+        }
+        
+        // Update total price
+        const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        cartTotalPrice.textContent = parseInt(totalPrice).toLocaleString('vi-VN');
+        
+        // Add event listeners for quantity buttons and remove buttons
+        const decreaseButtons = document.querySelectorAll('.decrease');
+        const increaseButtons = document.querySelectorAll('.increase');
+        const removeButtons = document.querySelectorAll('.remove-item');
+        
+        decreaseButtons.forEach(button => {
+            button.addEventListener('click', decreaseQuantity);
+        });
+        
+        increaseButtons.forEach(button => {
+            button.addEventListener('click', increaseQuantity);
+        });
+        
+        removeButtons.forEach(button => {
+            button.addEventListener('click', removeItem);
+        });
+    }
 }
 
 // Increase item quantity
@@ -391,14 +411,16 @@ function saveCart() {
 }
 
 // Checkout functionality
-checkoutBtn.addEventListener('click', () => {
-    if (cart.length === 0) {
-        showNotification('Your cart is empty', 'warning');
-        return;
-    }
-    
-    openCheckoutSheet();
-});
+if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', () => {
+        if (cart.length === 0) {
+            showNotification('Your cart is empty', 'warning');
+            return;
+        }
+        
+        openCheckoutSheet();
+    });
+}
 
 // DOM elements for checkout sheet
 const checkoutOverlay = document.getElementById('checkout-overlay');
@@ -410,8 +432,23 @@ const checkoutSubtotalEl = document.getElementById('checkout-subtotal');
 const checkoutShippingEl = document.getElementById('checkout-shipping');
 const checkoutTotalEl = document.getElementById('checkout-total');
 
+// Set up checkout sheet event listeners
+if (closeCheckoutBtn) {
+    closeCheckoutBtn.addEventListener('click', closeCheckoutSheet);
+}
+
+if (cancelCheckoutBtn) {
+    cancelCheckoutBtn.addEventListener('click', closeCheckoutSheet);
+}
+
+if (checkoutForm) {
+    checkoutForm.addEventListener('submit', placeOrder);
+}
+
 // Open checkout sheet
 function openCheckoutSheet() {
+    if (!checkoutOverlay) return;
+    
     // Populate checkout items
     populateCheckoutItems();
     
@@ -422,16 +459,22 @@ function openCheckoutSheet() {
     checkoutOverlay.classList.add('open');
     
     // Close cart sidebar
-    cartSidebar.classList.remove('open');
+    if (cartSidebar) {
+        cartSidebar.classList.remove('open');
+    }
 }
 
 // Close checkout sheet
 function closeCheckoutSheet() {
-    checkoutOverlay.classList.remove('open');
+    if (checkoutOverlay) {
+        checkoutOverlay.classList.remove('open');
+    }
 }
 
 // Populate checkout items from cart
 function populateCheckoutItems() {
+    if (!checkoutItemsContainer) return;
+    
     checkoutItemsContainer.innerHTML = '';
     
     cart.forEach(item => {
@@ -466,6 +509,11 @@ function populateCheckoutItems() {
 
 // Update checkout summary with totals
 function updateCheckoutSummary() {
+    // If checkout elements don't exist, exit
+    if (!checkoutSubtotalEl || !checkoutShippingEl || !checkoutTotalEl) {
+        return;
+    }
+    
     // Calculate subtotal
     const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
     
@@ -475,10 +523,10 @@ function updateCheckoutSummary() {
     // Calculate total
     const total = subtotal + shipping;
     
-    // Update display
-    checkoutSubtotalEl.textContent = parseInt(subtotal).toLocaleString('vi-VN');
-    checkoutShippingEl.textContent = parseInt(shipping).toLocaleString('vi-VN');
-    checkoutTotalEl.textContent = parseInt(total).toLocaleString('vi-VN');
+    // Format and display values
+    checkoutSubtotalEl.textContent = subtotal.toLocaleString('vi-VN');
+    checkoutShippingEl.textContent = shipping.toLocaleString('vi-VN');
+    checkoutTotalEl.textContent = total.toLocaleString('vi-VN');
 }
 
 // Handle checkout form submission
@@ -521,10 +569,6 @@ checkoutForm.addEventListener('submit', (e) => {
     // Close checkout sheet
     closeCheckoutSheet();
 });
-
-// Close checkout sheet event listeners
-closeCheckoutBtn.addEventListener('click', closeCheckoutSheet);
-cancelCheckoutBtn.addEventListener('click', closeCheckoutSheet);
 
 // Close checkout when clicking outside the sheet
 checkoutOverlay.addEventListener('click', (e) => {
