@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products - TechStore</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .products-banner {
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('images/hero-bg.jpg');
@@ -483,6 +483,89 @@
         <button id="checkout-btn">Checkout</button>
     </div>
 
+    <!-- Checkout Sheet -->
+    <div class="checkout-overlay" id="checkout-overlay">
+        <div class="checkout-sheet">
+            <div class="checkout-header">
+                <h2>Complete Your Order</h2>
+                <button id="close-checkout">&times;</button>
+            </div>
+            <div class="checkout-content">
+                <div class="checkout-summary">
+                    <h3>Order Summary</h3>
+                    <div class="checkout-items">
+                        <!-- Summary of cart items will be displayed here -->
+                    </div>
+                    <div class="checkout-subtotal">
+                        <div>Subtotal:</div>
+                        <div class="price"><span id="checkout-subtotal">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-shipping">
+                        <div>Shipping:</div>
+                        <div class="price"><span id="checkout-shipping">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-total">
+                        <div>Total:</div>
+                        <div class="price"><span id="checkout-total">0</span> ₫</div>
+                    </div>
+                </div>
+                <form id="checkout-form">
+                    <h3>Shipping Information</h3>
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Delivery Address</label>
+                        <textarea id="address" required rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" required>
+                    </div>
+                    
+                    <h3>Payment Method</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method">
+                            <input type="radio" id="cod" name="payment-method" value="cod" checked>
+                            <label for="cod">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Cash On Delivery</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer">
+                            <label for="bank-transfer">
+                                <i class="fas fa-university"></i>
+                                <span>Bank Transfer</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="credit-card" name="payment-method" value="credit-card">
+                            <label for="credit-card">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Credit/Debit Card</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-actions">
+                        <button type="button" id="cancel-checkout">Cancel</button>
+                        <button type="submit" id="place-order-btn">Place Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="products-banner">
         <h1>Our Laptop Collection</h1>
     </div>
@@ -527,8 +610,8 @@
 
     <div id="notification" class="notification"></div>
 
-    <script src="js/products.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/products.js"></script>
     <script>
         // Additional product page specific script
         document.addEventListener('DOMContentLoaded', async () => {
@@ -552,7 +635,7 @@
                 
                 // Show notification if using sample categories
                 if (categoryResult.usingSampleCategories) {
-                    showNotification('Using sample categories - API server is unavailable.', 'warning');
+                    createNotification('Using sample categories - API server is unavailable.', 'warning');
                 }
                 
                 // Create button for each category
@@ -632,13 +715,13 @@
                 
                 // Display notification if using sample data
                 if (result.usingSampleData) {
-                    showNotification('Using sample data - API server is unavailable.', 'warning');
+                    createNotification('Using sample data - API server is unavailable.', 'warning');
                 }
                 
                 // If no products were found for this category
                 if (result.noProductsFound || result.products.length === 0) {
                     if (currentCategory !== 'all') {
-                        showNotification(`No products found in category ID: ${currentCategory}. This may indicate a database misconfiguration.`, 'warning');
+                        createNotification(`No products found in category ID: ${currentCategory}. This may indicate a database misconfiguration.`, 'warning');
                         console.warn(`No products found for category ID: ${currentCategory}`);
                     }
                 }
@@ -727,16 +810,50 @@
                 });
             }
             
-            // Helper function to show notifications
-            function showNotification(message, type = 'info') {
-                const notification = document.getElementById('notification');
-                notification.textContent = message;
-                notification.className = `notification ${type}`;
-                notification.style.display = 'block';
+            // Function to add products to cart
+            function addToCart(event) {
+                const productId = event.currentTarget.getAttribute('data-id');
+                const product = products.find(p => String(p.id) === String(productId));
                 
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 5000); // Hide after 5 seconds
+                if (product) {
+                    console.log(`Adding product to cart: ${product.title} (ID: ${product.id})`);
+                    
+                    // Call the global addToCart function from app.js if available
+                    if (typeof window.addToCart === 'function') {
+                        window.addToCart(event);
+                    } else {
+                        // Add product to cart manually if global function not available
+                        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                        
+                        // Check if product is already in cart
+                        const existingProduct = cart.find(item => String(item.id) === String(productId));
+                        
+                        if (existingProduct) {
+                            existingProduct.quantity += 1;
+                            createNotification(`Increased ${product.title} quantity in cart`, 'success');
+                        } else {
+                            cart.push({
+                                id: product.id,
+                                title: product.title,
+                                price: product.discount_price || product.price,
+                                image: product.image,
+                                quantity: 1
+                            });
+                            createNotification(`${product.title} added to cart`, 'success');
+                        }
+                        
+                        // Save cart to localStorage
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        
+                        // Update cart count
+                        const cartCount = document.getElementById('cart-count');
+                        const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
+                        cartCount.textContent = totalQuantity;
+                    }
+                } else {
+                    console.error(`Product with ID ${productId} not found!`);
+                    createNotification('Error adding product to cart', 'error');
+                }
             }
             
             // Override the global displayProducts function to use our filtered products

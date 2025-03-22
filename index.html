@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechStore - Laptop Shop</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
@@ -37,9 +37,92 @@
             <!-- Cart items will be added here dynamically -->
         </div>
         <div class="cart-total">
-            <h3>Total: $<span id="cart-total-price">0</span></h3>
+            <h3>Total: <span id="cart-total-price">0</span> ₫</h3>
         </div>
         <button id="checkout-btn">Checkout</button>
+    </div>
+
+    <!-- Checkout Sheet -->
+    <div class="checkout-overlay" id="checkout-overlay">
+        <div class="checkout-sheet">
+            <div class="checkout-header">
+                <h2>Complete Your Order</h2>
+                <button id="close-checkout">&times;</button>
+            </div>
+            <div class="checkout-content">
+                <div class="checkout-summary">
+                    <h3>Order Summary</h3>
+                    <div class="checkout-items">
+                        <!-- Summary of cart items will be displayed here -->
+                    </div>
+                    <div class="checkout-subtotal">
+                        <div>Subtotal:</div>
+                        <div class="price"><span id="checkout-subtotal">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-shipping">
+                        <div>Shipping:</div>
+                        <div class="price"><span id="checkout-shipping">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-total">
+                        <div>Total:</div>
+                        <div class="price"><span id="checkout-total">0</span> ₫</div>
+                    </div>
+                </div>
+                <form id="checkout-form">
+                    <h3>Shipping Information</h3>
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Delivery Address</label>
+                        <textarea id="address" required rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" required>
+                    </div>
+                    
+                    <h3>Payment Method</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method">
+                            <input type="radio" id="cod" name="payment-method" value="cod" checked>
+                            <label for="cod">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Cash On Delivery</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer">
+                            <label for="bank-transfer">
+                                <i class="fas fa-university"></i>
+                                <span>Bank Transfer</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="credit-card" name="payment-method" value="credit-card">
+                            <label for="credit-card">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Credit/Debit Card</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-actions">
+                        <button type="button" id="cancel-checkout">Cancel</button>
+                        <button type="submit" id="place-order-btn">Place Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <section class="hero">

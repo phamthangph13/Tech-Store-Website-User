@@ -488,8 +488,11 @@ function getSampleProductData(productId) {
 // Helper function to get category name from category IDs
 function getCategoryFromIds(categoryIds) {
     if (!categoryIds || categoryIds.length === 0) {
+        console.warn('Product has no category IDs, showing as uncategorized');
         return 'uncategorized';
     }
+    
+    console.log('Getting category for IDs:', categoryIds);
     
     // For the demo, we'll use a simplified mapping
     // In a real application, you would fetch this from the API
@@ -503,13 +506,23 @@ function getCategoryFromIds(categoryIds) {
         '6600a1c3b6f4a2d4e8f3b132': 'business'
     };
     
+    console.log('Using category map:', categoryIdMap);
+    
     // Return the first matching category or default to uncategorized
     for (const categoryId of categoryIds) {
-        if (categoryIdMap[categoryId]) {
-            return categoryIdMap[categoryId];
+        // If it's an object with an _id field (MongoDB document)
+        const id = typeof categoryId === 'object' && categoryId._id ? categoryId._id : categoryId;
+        
+        // Convert to string for consistent comparison
+        const idStr = id.toString();
+        
+        if (categoryIdMap[idStr]) {
+            console.log(`Found category mapping: ${idStr} -> ${categoryIdMap[idStr]}`);
+            return categoryIdMap[idStr];
         }
     }
     
+    console.warn('No matching category found for IDs:', categoryIds);
     return 'uncategorized';
 }
 
@@ -615,6 +628,62 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize with all products
     fetchProducts().then(result => {
         products = result.products;
+        console.log('Products loaded:', products ? products.length : 0, 'items');
+        
+        // Debug: Log all product IDs to identify the issue
+        if (products && products.length > 0) {
+            console.log('Available Product IDs:', products.map(p => p.id));
+            console.log('First product sample:', products[0]);
+        }
+        
+        if (!products || !products.length) {
+            // If no products from API, use sample data as fallback
+            console.log('No products loaded from API, using sample data');
+            
+            // Define some sample products if needed
+            if (typeof sampleProducts === 'undefined' || !sampleProducts.length) {
+                console.log('Creating sample products array');
+                window.sampleProducts = [
+                    {
+                        id: "1", // Convert to string to match API format
+                        title: "Dell XPS 13",
+                        category: "ultrabook",
+                        price: 25000000,
+                        discount_percent: 10,
+                        discount_price: 22500000,
+                        image: "images/dell-xps13.jpg",
+                        description: "Intel Core i7, 16GB RAM, 512GB SSD, 13.4-inch FHD+ Display"
+                    },
+                    {
+                        id: "2", // Convert to string to match API format
+                        title: "MacBook Pro 14",
+                        category: "ultrabook",
+                        price: 35000000,
+                        discount_percent: 0,
+                        image: "images/macbook-pro.jpg",
+                        description: "Apple M1 Pro, 16GB RAM, 512GB SSD, 14-inch Liquid Retina XDR Display"
+                    },
+                    {
+                        id: "3", // Convert to string to match API format
+                        title: "Alienware m15",
+                        category: "gaming",
+                        price: 40000000,
+                        discount_percent: 15,
+                        discount_price: 34000000,
+                        image: "images/alienware-m15.jpg",
+                        description: "Intel Core i9, 32GB RAM, 1TB SSD, NVIDIA RTX 3080, 15.6-inch QHD Display"
+                    }
+                ];
+            }
+            
+            products = window.sampleProducts;
+        }
+        
+        displayProducts('all');
+    }).catch(error => {
+        console.error('Error initializing products:', error);
+        // Fallback to sample data in case of error
+        products = window.sampleProducts || [];
         displayProducts('all');
     });
 }); 

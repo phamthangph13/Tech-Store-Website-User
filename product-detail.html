@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Detail - TechStore</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .breadcrumb {
             display: flex;
@@ -828,9 +828,92 @@
             <!-- Cart items will be added here dynamically -->
         </div>
         <div class="cart-total">
-            <h3>Total: $<span id="cart-total-price">0</span></h3>
+            <h3>Total: <span id="cart-total-price">0</span> ₫</h3>
         </div>
         <button id="checkout-btn">Checkout</button>
+    </div>
+
+    <!-- Checkout Sheet -->
+    <div class="checkout-overlay" id="checkout-overlay">
+        <div class="checkout-sheet">
+            <div class="checkout-header">
+                <h2>Complete Your Order</h2>
+                <button id="close-checkout">&times;</button>
+            </div>
+            <div class="checkout-content">
+                <div class="checkout-summary">
+                    <h3>Order Summary</h3>
+                    <div class="checkout-items">
+                        <!-- Summary of cart items will be displayed here -->
+                    </div>
+                    <div class="checkout-subtotal">
+                        <div>Subtotal:</div>
+                        <div class="price"><span id="checkout-subtotal">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-shipping">
+                        <div>Shipping:</div>
+                        <div class="price"><span id="checkout-shipping">0</span> ₫</div>
+                    </div>
+                    <div class="checkout-total">
+                        <div>Total:</div>
+                        <div class="price"><span id="checkout-total">0</span> ₫</div>
+                    </div>
+                </div>
+                <form id="checkout-form">
+                    <h3>Shipping Information</h3>
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Delivery Address</label>
+                        <textarea id="address" required rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" required>
+                    </div>
+                    
+                    <h3>Payment Method</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method">
+                            <input type="radio" id="cod" name="payment-method" value="cod" checked>
+                            <label for="cod">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Cash On Delivery</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer">
+                            <label for="bank-transfer">
+                                <i class="fas fa-university"></i>
+                                <span>Bank Transfer</span>
+                            </label>
+                        </div>
+                        <div class="payment-method">
+                            <input type="radio" id="credit-card" name="payment-method" value="credit-card">
+                            <label for="credit-card">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Credit/Debit Card</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-actions">
+                        <button type="button" id="cancel-checkout">Cancel</button>
+                        <button type="submit" id="place-order-btn">Place Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <main class="container">
@@ -1303,13 +1386,65 @@
                         // Add event listeners to color options
                         setTimeout(() => {
                             const colorOptions = document.querySelectorAll('.color-option');
-                            colorOptions.forEach(option => {
-                                option.addEventListener('click', function() {
-                                    colorOptions.forEach(o => o.classList.remove('active'));
-                                    this.classList.add('active');
+                            colorOptions.forEach(colorOption => {
+                                colorOption.addEventListener('click', () => {
+                                    // Remove active class from all options
+                                    colorOptions.forEach(option => option.classList.remove('active'));
+                                    // Add active class to selected option
+                                    colorOption.classList.add('active');
                                     
-                                    const colorName = this.dataset.colorName;
+                                    // Update selected color name
+                                    const colorName = colorOption.getAttribute('data-color-name');
                                     document.querySelector('.selected-color-name').textContent = `Selected: ${colorName}`;
+                                    
+                                    // Get selected variant price
+                                    const selectedVariantElement = document.querySelector('.variant-option.active');
+                                    const selectedVariantIndex = selectedVariantElement ? parseInt(selectedVariantElement.dataset.variantIndex) : 0;
+                                    const selectedVariant = product.variant_specs && product.variant_specs.length > 0
+                                        ? product.variant_specs[selectedVariantIndex]
+                                        : { name: 'Standard', price: product.price, discount_percent: product.discount_percent };
+                                    
+                                    // Calculate price with color adjustment
+                                    const variantPrice = selectedVariant.price;
+                                    const variantDiscountPercent = selectedVariant.discount_percent;
+                                    const colorPriceAdjustment = parseInt(colorOption.getAttribute('data-price-adjustment') || 0);
+                                    
+                                    // Calculate discounted price
+                                    const discountedVariantPrice = variantPrice - (variantPrice * variantDiscountPercent / 100);
+                                    const finalPrice = discountedVariantPrice + colorPriceAdjustment;
+                                    
+                                    // Update displayed price
+                                    const priceElement = document.getElementById('product-price');
+                                    if (priceElement) {
+                                        const variantDiscountDisplay = variantDiscountPercent > 0 ? 
+                                            `<div class="original-price">₫${formatPrice(variantPrice)}</div>
+                                             <div class="discount-badge">-${variantDiscountPercent}%</div>` : '';
+                                        
+                                        priceElement.innerHTML = `₫${formatPrice(finalPrice)} ${variantDiscountDisplay}`;
+                                        
+                                        // Show color adjustment if any
+                                        if (colorPriceAdjustment !== 0) {
+                                            const colorAdjustmentElement = document.createElement('div');
+                                            colorAdjustmentElement.classList.add('color-price-adjustment');
+                                            colorAdjustmentElement.textContent = `Color adjustment: ${colorPriceAdjustment > 0 ? '+' : ''}₫${formatPrice(colorPriceAdjustment)}`;
+                                            colorAdjustmentElement.style.fontSize = '14px';
+                                            colorAdjustmentElement.style.color = colorPriceAdjustment > 0 ? '#e74c3c' : '#27ae60';
+                                            
+                                            // Remove any existing adjustment info
+                                            const existingAdjustment = document.querySelector('.color-price-adjustment');
+                                            if (existingAdjustment) {
+                                                existingAdjustment.remove();
+                                            }
+                                            
+                                            priceElement.appendChild(colorAdjustmentElement);
+                                        } else {
+                                            // Remove adjustment info if no adjustment
+                                            const existingAdjustment = document.querySelector('.color-price-adjustment');
+                                            if (existingAdjustment) {
+                                                existingAdjustment.remove();
+                                            }
+                                        }
+                                    }
                                 });
                             });
                         }, 100);
@@ -1474,6 +1609,14 @@
                             
                             const finalPrice = (variantPrice - (variantPrice * variantDiscountPercent / 100)) + colorPriceAdjustment;
                             
+                            console.log('Adding to cart with details:', {
+                                productId: product._id,
+                                variant: selectedVariant.name,
+                                color: selectedColor.name,
+                                colorAdjustment: colorPriceAdjustment,
+                                finalPrice: finalPrice
+                            });
+                            
                             // Create cart item
                             const cartItem = {
                                 id: product._id,
@@ -1481,6 +1624,9 @@
                                 variant: selectedVariant.name,
                                 color: selectedColor.name,
                                 price: finalPrice,
+                                original_price: variantPrice,
+                                discount_percent: variantDiscountPercent,
+                                color_adjustment: colorPriceAdjustment,
                                 image: product.image_urls ? product.image_urls[0] : (product.thumbnail || 'images/default-laptop.jpg'),
                                 quantity: quantity
                             };
@@ -1602,24 +1748,39 @@
             
             // Function to add item to cart
             function addToCart(item) {
+                console.log('Adding to cart:', item);
+                
+                // Ensure the item has all required properties
+                if (!item.id) {
+                    console.error('Cart item missing ID!', item);
+                    showNotification('Error adding product to cart: Missing ID', 'error');
+                    return;
+                }
+                
                 // Get existing cart from local storage
                 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
                 
+                // Normalize the item ID to string for consistent comparison
+                item.id = item.id.toString();
+                
                 // Check if similar item is already in cart
                 const existingItemIndex = cart.findIndex(cartItem => 
-                    cartItem.id === item.id && 
+                    cartItem.id.toString() === item.id && 
                     cartItem.variant === item.variant && 
                     cartItem.color === item.color
                 );
                 
                 if (existingItemIndex >= 0) {
+                    console.log('Updating existing cart item quantity');
                     cart[existingItemIndex].quantity += item.quantity;
                 } else {
+                    console.log('Adding new item to cart');
                     cart.push(item);
                 }
                 
                 // Save to localStorage
                 localStorage.setItem('cart', JSON.stringify(cart));
+                console.log('Cart saved to localStorage:', cart);
                 
                 // Update cart count in header
                 updateCartCount(cart.reduce((total, item) => total + item.quantity, 0));

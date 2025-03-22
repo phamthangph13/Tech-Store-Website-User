@@ -126,20 +126,99 @@ closeCartBtn.addEventListener('click', () => {
     cartSidebar.classList.remove('open');
 });
 
+// Enhanced notification system
+function showNotification(message, type = 'success', duration = 3000) {
+    // Clear any existing notification
+    if (notification.classList.contains('show')) {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            createNotification(message, type, duration);
+        }, 300);
+    } else {
+        createNotification(message, type, duration);
+    }
+}
+
+function createNotification(message, type, duration) {
+    // Clear previous notification content
+    notification.innerHTML = '';
+    
+    // Reset classes and add type class
+    notification.className = 'notification';
+    notification.classList.add(type);
+    
+    // Add icon based on notification type
+    let iconClass = 'fa-info-circle';
+    if (type === 'success') iconClass = 'fa-check-circle';
+    if (type === 'error') iconClass = 'fa-times-circle';
+    if (type === 'warning') iconClass = 'fa-exclamation-triangle';
+    
+    // Create notification content
+    const icon = document.createElement('div');
+    icon.className = 'notification-icon';
+    icon.innerHTML = `<i class="fas ${iconClass}"></i>`;
+    
+    const content = document.createElement('div');
+    content.className = 'notification-message';
+    content.textContent = message;
+    
+    const progress = document.createElement('div');
+    progress.className = 'notification-progress';
+    progress.style.animationDuration = `${duration/1000}s`;
+    
+    // Append elements to notification
+    notification.appendChild(icon);
+    notification.appendChild(content);
+    notification.appendChild(progress);
+    
+    // Show notification
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    // Hide notification after duration
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, duration);
+}
+
 // Add item to cart
 function addToCart(event) {
-    const productId = parseInt(event.target.getAttribute('data-id'));
-    const product = products.find(p => p.id === productId);
+    // Get the button element, whether it was clicked directly or a child was clicked
+    const button = event.target.closest('.add-to-cart');
+    if (!button) return;
+    
+    const productId = button.getAttribute('data-id');
+    console.log('Attempting to add product with ID:', productId);
+    
+    // First try to find with strict equality (handles both string and number IDs)
+    let product = products.find(p => p.id === productId);
+    
+    // If not found, try with parsed integer (for backward compatibility)
+    if (!product) {
+        const parsedId = parseInt(productId);
+        product = products.find(p => p.id === parsedId || p.id === parsedId.toString());
+    }
+    
+    if (!product) {
+        console.error('Product not found with ID:', productId);
+        console.log('Available product IDs:', products.map(p => p.id));
+        showNotification('Sorry, there was an error adding this product to cart', 'error');
+        return;
+    }
+    
+    console.log('Product found:', product.title);
     
     // Use the discounted price if available
     const price = product.discount_price && product.discount_percent > 0 ? 
         product.discount_price : product.price;
     
     // Check if item is already in cart
-    const existingItem = cart.find(item => item.id === productId);
+    const existingItem = cart.find(item => item.id.toString() === productId.toString());
     
     if (existingItem) {
         existingItem.quantity += 1;
+        showNotification(`Increased quantity of ${product.title} in cart`, 'success');
     } else {
         cart.push({
             id: product.id,
@@ -152,12 +231,12 @@ function addToCart(event) {
             variant: 'Standard', // Default variant
             color: 'Default'     // Default color
         });
+        showNotification(`${product.title} added to cart`, 'success');
     }
     
     // Update cart and localStorage
     updateCart();
     saveCart();
-    showNotification(`${product.title} added to cart`);
 }
 
 // Update cart display
@@ -245,12 +324,12 @@ function updateCart() {
 
 // Increase item quantity
 function increaseQuantity(event) {
-    const productId = parseInt(event.target.getAttribute('data-id'));
+    const productId = event.target.getAttribute('data-id');
     const variant = event.target.getAttribute('data-variant');
     const color = event.target.getAttribute('data-color');
     
     const item = cart.find(item => 
-        item.id === productId && 
+        item.id.toString() === productId.toString() && 
         item.variant === variant && 
         item.color === color
     );
@@ -264,12 +343,12 @@ function increaseQuantity(event) {
 
 // Decrease item quantity
 function decreaseQuantity(event) {
-    const productId = parseInt(event.target.getAttribute('data-id'));
+    const productId = event.target.getAttribute('data-id');
     const variant = event.target.getAttribute('data-variant');
     const color = event.target.getAttribute('data-color');
     
     const item = cart.find(item => 
-        item.id === productId && 
+        item.id.toString() === productId.toString() && 
         item.variant === variant && 
         item.color === color
     );
@@ -288,7 +367,7 @@ function decreaseQuantity(event) {
 
 // Remove item from cart
 function removeItem(event) {
-    const productId = parseInt(event.target.getAttribute('data-id'));
+    const productId = event.target.getAttribute('data-id');
     const variant = event.target.getAttribute('data-variant');
     const color = event.target.getAttribute('data-color');
     
@@ -298,7 +377,7 @@ function removeItem(event) {
 // Remove item from cart helper
 function removeItemFromCart(productId, variant, color) {
     cart = cart.filter(item => 
-        !(item.id === productId && 
+        !(item.id.toString() === productId.toString() && 
         item.variant === variant && 
         item.color === color)
     );
@@ -311,32 +390,145 @@ function saveCart() {
     localStorage.setItem('cart', JSON.stringify(cart));
 }
 
-// Show notification
-function showNotification(message) {
-    notification.textContent = message;
-    notification.classList.add('show');
-    
-    setTimeout(() => {
-        notification.classList.remove('show');
-    }, 3000);
-}
-
 // Checkout functionality
 checkoutBtn.addEventListener('click', () => {
     if (cart.length === 0) {
-        showNotification('Your cart is empty');
+        showNotification('Your cart is empty', 'warning');
         return;
     }
     
-    // In a real application, this would redirect to a checkout page
-    // or show a modal for payment details
-    const total = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    alert(`Thank you for your purchase! Total: $${total.toFixed(2)}`);
+    openCheckoutSheet();
+});
+
+// DOM elements for checkout sheet
+const checkoutOverlay = document.getElementById('checkout-overlay');
+const closeCheckoutBtn = document.getElementById('close-checkout');
+const cancelCheckoutBtn = document.getElementById('cancel-checkout');
+const checkoutForm = document.getElementById('checkout-form');
+const checkoutItemsContainer = document.querySelector('.checkout-items');
+const checkoutSubtotalEl = document.getElementById('checkout-subtotal');
+const checkoutShippingEl = document.getElementById('checkout-shipping');
+const checkoutTotalEl = document.getElementById('checkout-total');
+
+// Open checkout sheet
+function openCheckoutSheet() {
+    // Populate checkout items
+    populateCheckoutItems();
     
-    // Clear cart after checkout
+    // Calculate and display totals
+    updateCheckoutSummary();
+    
+    // Show the checkout overlay
+    checkoutOverlay.classList.add('open');
+    
+    // Close cart sidebar
+    cartSidebar.classList.remove('open');
+}
+
+// Close checkout sheet
+function closeCheckoutSheet() {
+    checkoutOverlay.classList.remove('open');
+}
+
+// Populate checkout items from cart
+function populateCheckoutItems() {
+    checkoutItemsContainer.innerHTML = '';
+    
+    cart.forEach(item => {
+        const checkoutItem = document.createElement('div');
+        checkoutItem.classList.add('checkout-item');
+        
+        // Create variant display if applicable
+        let variantDisplay = '';
+        if (item.variant && item.variant !== 'Standard' || item.color && item.color !== 'Default') {
+            let variantText = [];
+            if (item.variant && item.variant !== 'Standard') variantText.push(item.variant);
+            if (item.color && item.color !== 'Default') variantText.push(item.color);
+            variantDisplay = `<div class="checkout-item-variant">${variantText.join(' - ')}</div>`;
+        }
+        
+        // Format price
+        const formattedPrice = parseInt(item.price * item.quantity).toLocaleString('vi-VN');
+        
+        checkoutItem.innerHTML = `
+            <div class="checkout-item-image" style="background-image: url('${item.image}')"></div>
+            <div class="checkout-item-details">
+                <div class="checkout-item-title">${item.title}</div>
+                ${variantDisplay}
+                <div class="checkout-item-quantity">Quantity: ${item.quantity}</div>
+            </div>
+            <div class="checkout-item-price">${formattedPrice} ₫</div>
+        `;
+        
+        checkoutItemsContainer.appendChild(checkoutItem);
+    });
+}
+
+// Update checkout summary with totals
+function updateCheckoutSummary() {
+    // Calculate subtotal
+    const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    
+    // Calculate shipping - free shipping for orders over 500,000 VND
+    const shipping = subtotal > 500000 ? 0 : 30000;
+    
+    // Calculate total
+    const total = subtotal + shipping;
+    
+    // Update display
+    checkoutSubtotalEl.textContent = parseInt(subtotal).toLocaleString('vi-VN');
+    checkoutShippingEl.textContent = parseInt(shipping).toLocaleString('vi-VN');
+    checkoutTotalEl.textContent = parseInt(total).toLocaleString('vi-VN');
+}
+
+// Handle checkout form submission
+checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = {
+        fullName: document.getElementById('full-name').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        paymentMethod: document.querySelector('input[name="payment-method"]:checked').value,
+        items: cart.map(item => ({
+            id: item.id,
+            title: item.title,
+            variant: item.variant,
+            color: item.color,
+            price: item.price,
+            quantity: item.quantity
+        })),
+        subtotal: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
+        shipping: cart.reduce((total, item) => total + (item.price * item.quantity), 0) > 500000 ? 0 : 30000
+    };
+    
+    formData.total = formData.subtotal + formData.shipping;
+    
+    // In a real application, we would send this data to a server
+    console.log('Order submitted:', formData);
+    
+    // Show success message
+    showNotification('Thank you for your order! Order has been placed successfully.', 'success', 5000);
+    
+    // Clear cart
     cart = [];
     updateCart();
     saveCart();
-    cartSidebar.classList.remove('open');
-    showNotification('Your order has been placed');
+    
+    // Close checkout sheet
+    closeCheckoutSheet();
+});
+
+// Close checkout sheet event listeners
+closeCheckoutBtn.addEventListener('click', closeCheckoutSheet);
+cancelCheckoutBtn.addEventListener('click', closeCheckoutSheet);
+
+// Close checkout when clicking outside the sheet
+checkoutOverlay.addEventListener('click', (e) => {
+    if (e.target === checkoutOverlay) {
+        closeCheckoutSheet();
+    }
 }); 
