@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail - TechStore</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin: 20px 0 30px;
+            font-size: 14px;
+        }
+        
+        .breadcrumb a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .breadcrumb span {
+            margin: 0 10px;
+            color: #95a5a6;
+        }
+        
+        .product-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .product-gallery {
+            position: relative;
+        }
+        
+        .main-image {
+            width: 100%;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .thumbnail-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .thumbnail.active, .thumbnail:hover {
+            opacity: 1;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.4);
+            transform: translateY(-3px);
+        }
+        
+        .product-info h1 {
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .product-category {
+            display: inline-block;
+            background: rgba(52, 152, 219, 0.9);
+            color: #fff;
+            padding: 5px 12px;
+            margin-bottom: 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .product-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #3498db;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .product-price::before {
+            content: '$';
+            font-size: 24px;
+            margin-right: 2px;
+            font-weight: 600;
+        }
+        
+        .product-description {
+            color: #7f8c8d;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+        
+        .product-specs {
+            margin-bottom: 30px;
+        }
+        
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .spec-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .spec-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .spec-table td:first-child {
+            font-weight: 600;
+            color: #34495e;
+            width: 35%;
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .quantity-btn {
+            background: #f1f1f1;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .quantity-value {
+            margin: 0 15px;
+            font-size: 18px;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .add-to-cart-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+        }
+        
+        .add-to-cart-btn:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .product-meta {
+            margin-top: 15px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .product-meta span {
+            margin-right: 15px;
+        }
+        
+        .product-meta i {
+            margin-right: 5px;
+            color: #3498db;
+        }
+        
+        .tabs {
+            margin-top: 60px;
+            margin-bottom: 60px;
+        }
+        
+        .tab-links {
+            display: flex;
+            border-bottom: 2px solid #ecf0f1;
+            margin-bottom: 30px;
+        }
+        
+        .tab-link {
+            padding: 15px 25px;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-link.active {
+            color: #3498db;
+        }
+        
+        .tab-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .full-specs table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .full-specs table th {
+            text-align: left;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .full-specs table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .review {
+            display: flex;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .review:last-child {
+            border-bottom: none;
+        }
+        
+        .review-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 600;
+            margin-right: 20px;
+        }
+        
+        .review-content {
+            flex: 1;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .review-author {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .review-date {
+            color: #95a5a6;
+            font-size: 14px;
+        }
+        
+        .review-stars {
+            margin-bottom: 10px;
+            color: #f39c12;
+        }
+        
+        .review-text {
+            line-height: 1.6;
+            color: #7f8c8d;
+        }
+        
+        .related-products {
+            margin-top: 60px;
+            margin-bottom: 60px;
+        }
+        
+        .related-products h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50;
+            font-size: 28px;
+        }
+        
+        .related-products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .related-products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tab-links {
+                flex-wrap: wrap;
+            }
+            
+            .tab-link {
+                padding: 10px 15px;
+            }
+            
+            .related-products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Product Detail Page Specific Styles */
+        .variant-selector, .color-selector {
+            margin-bottom: 25px;
+        }
+        
+        .variant-selector h3, .color-selector h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .variant-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .variant-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .variant-option.active {
+            border-color: #3498db;
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .variant-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .variant-price {
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #e0e0e0;
+            transition: all 0.2s ease;
+        }
+        
+        .color-option.active {
+            border-color: #3498db;
+            transform: scale(1.1);
+        }
+        
+        .selected-color-name {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #95a5a6;
+            font-size: 18px;
+        }
+        
+        .discount-badge {
+            background-color: #e74c3c;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .product-highlights {
+            margin: 20px 0;
+        }
+        
+        .product-highlights h4, .product-info-section h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .product-highlights ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        
+        .product-highlights li {
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        
+        .product-info-section {
+            margin-bottom: 20px;
+        }
+        
+        .product-videos {
+            margin: 50px 0;
+        }
+        
+        .product-videos h3 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 28px;
+        }
+        
+        .video-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .product-video {
+            width: calc(50% - 10px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-video video {
+            width: 100%;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .product-video {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>TechStore</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div class="cart-total">
+            <h3>Total: $<span id="cart-total-price">0</span></h3>
+        </div>
+        <button id="checkout-btn">Checkout</button>
+    </div>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <a href="products.html">Products</a>
+            <span>/</span>
+            <span id="product-breadcrumb-name">Dell XPS 15</span>
+        </div>
+        
+        <div class="product-detail-container">
+            <div class="product-gallery">
+                <div class="main-image" id="main-product-image"></div>
+                <div class="thumbnail-container" id="thumbnail-container">
+                    <!-- Thumbnails will be added dynamically -->
+                </div>
+            </div>
+            
+            <div class="product-info">
+                <div class="product-category" id="product-category">Ultrabook</div>
+                <h1 id="product-title">Dell XPS 15</h1>
+                <div class="product-price" id="product-price">1799.99</div>
+                <div class="product-description" id="product-description">
+                    Premium ultrabook with 15.6" 4K OLED display, Intel Core i7, 16GB RAM, 1TB SSD. The Dell XPS 15 combines powerful performance with stunning visuals in a sleek, lightweight design perfect for professionals and content creators.
+                </div>
+                
+                <div class="product-specs">
+                    <h3>Key Specifications</h3>
+                    <table class="spec-table">
+                        <tr>
+                            <td>Processor</td>
+                            <td>Intel Core i7-11800H</td>
+                        </tr>
+                        <tr>
+                            <td>RAM</td>
+                            <td>16GB DDR4</td>
+                        </tr>
+                        <tr>
+                            <td>Storage</td>
+                            <td>1TB SSD</td>
+                        </tr>
+                        <tr>
+                            <td>Display</td>
+                            <td>15.6" 4K OLED (3840 x 2160)</td>
+                        </tr>
+                        <tr>
+                            <td>Graphics</td>
+                            <td>NVIDIA GeForce RTX 3050 Ti</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="quantity-selector">
+                    <button class="quantity-btn decrease-qty">-</button>
+                    <input type="number" class="quantity-value" value="1" min="1" max="10">
+                    <button class="quantity-btn increase-qty">+</button>
+                </div>
+                
+                <button class="add-to-cart-btn" id="detail-add-to-cart">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+                
+                <div class="product-meta">
+                    <span><i class="fas fa-check-circle"></i> In Stock</span>
+                    <span><i class="fas fa-truck"></i> Free Shipping</span>
+                    <span><i class="fas fa-undo"></i> 30-Day Returns</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab-links">
+                <div class="tab-link active" data-tab="description">Description</div>
+                <div class="tab-link" data-tab="specifications">Full Specifications</div>
+                <div class="tab-link" data-tab="reviews">Reviews</div>
+            </div>
+            
+            <div class="tab-content active" id="description">
+                <h3>Product Description</h3>
+                <p>Experience unrivaled performance with the Dell XPS 15, a premium ultrabook designed for professionals and creatives who demand the best. The stunning 15.6" 4K OLED display delivers vibrant colors and deep contrasts, making it perfect for photo and video editing.</p>
+                <p>Powered by an 11th Gen Intel Core i7 processor and NVIDIA GeForce RTX 3050 Ti graphics, this laptop handles demanding applications with ease. The 16GB of RAM ensures smooth multitasking, while the spacious 1TB SSD provides ample storage and lightning-fast boot times.</p>
+                <p>The CNC-machined aluminum chassis and carbon fiber palm rest offer a premium look and feel, while keeping the weight to a minimum. Despite its powerful components, the XPS 15 maintains excellent battery life, allowing you to work all day without worrying about finding a power outlet.</p>
+                <p>Advanced thermal design with dual fans and heat pipes ensures the laptop stays cool even under heavy workloads, and the InfinityEdge display minimizes bezels for a more immersive viewing experience.</p>
+            </div>
+            
+            <div class="tab-content" id="specifications">
+                <h3>Technical Specifications</h3>
+                <div class="full-specs">
+                    <table>
+                        <tr>
+                            <th colspan="2">Processor</th>
+                        </tr>
+                        <tr>
+                            <td>CPU Model</td>
+                            <td>Intel Core i7-11800H</td>
+                        </tr>
+                        <tr>
+                            <td>Base Clock</td>
+                            <td>2.3 GHz</td>
+                        </tr>
+                        <tr>
+                            <td>Turbo Boost</td>
+                            <td>Up to 4.6 GHz</td>
+                        </tr>
+                        <tr>
+                            <td>Cores/Threads</td>
+                            <td>8 cores / 16 threads</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Memory</th>
+                        </tr>
+                        <tr>
+                            <td>RAM</td>
+                            <td>16GB DDR4 3200MHz (Dual Channel)</td>
+                        </tr>
+                        <tr>
+                            <td>Expandable</td>
+                            <td>Up to 64GB (2 SODIMM slots)</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Storage</th>
+                        </tr>
+                        <tr>
+                            <td>Type</td>
+                            <td>1TB M.2 PCIe NVMe SSD</td>
+                        </tr>
+                        <tr>
+                            <td>Expansion</td>
+                            <td>1 M.2 2280 PCIe x4 slot</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Display</th>
+                        </tr>
+                        <tr>
+                            <td>Size</td>
+                            <td>15.6 inches</td>
+                        </tr>
+                        <tr>
+                            <td>Resolution</td>
+                            <td>3840 x 2160 (4K UHD)</td>
+                        </tr>
+                        <tr>
+                            <td>Type</td>
+                            <td>OLED, 400-nit, 100% DCI-P3 color gamut</td>
+                        </tr>
+                        <tr>
+                            <td>Touch</td>
+                            <td>Optional</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Graphics</th>
+                        </tr>
+                        <tr>
+                            <td>GPU</td>
+                            <td>NVIDIA GeForce RTX 3050 Ti (4GB GDDR6)</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Connectivity</th>
+                        </tr>
+                        <tr>
+                            <td>Wi-Fi</td>
+                            <td>Killer Wi-Fi 6 AX1650 (2x2)</td>
+                        </tr>
+                        <tr>
+                            <td>Bluetooth</td>
+                            <td>Bluetooth 5.1</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Ports</th>
+                        </tr>
+                        <tr>
+                            <td>USB-C</td>
+                            <td>2x Thunderbolt 4 (USB-C) with Power Delivery & DisplayPort</td>
+                        </tr>
+                        <tr>
+                            <td>USB-A</td>
+                            <td>1x USB 3.2 Gen 2</td>
+                        </tr>
+                        <tr>
+                            <td>Audio</td>
+                            <td>3.5mm headphone/microphone combo jack</td>
+                        </tr>
+                        <tr>
+                            <td>Card Reader</td>
+                            <td>SD card reader (UHS-III)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="reviews">
+                <h3>Customer Reviews</h3>
+                <div class="review">
+                    <div class="review-avatar">J</div>
+                    <div class="review-content">
+                        <div class="review-header">
+                            <div class="review-author">John Smith</div>
+                            <div class="review-date">2 months ago</div>
+                        </div>
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="review-text">
+                            <p>The Dell XPS 15 is probably the best Windows laptop I've ever owned. The build quality is amazing, and the 4K OLED display is stunning. Performance is excellent for both development work and occasional video editing.</p>
+                            <p>Battery life is decent for a laptop with these specs, usually lasting me around 6-7 hours with regular use. The keyboard is comfortable for long typing sessions, and the trackpad is smooth and responsive.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="review">
+                    <div class="review-avatar">S</div>
+                    <div class="review-content">
+                        <div class="review-header">
+                            <div class="review-author">Sarah Johnson</div>
+                            <div class="review-date">1 month ago</div>
+                        </div>
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </div>
+                        <div class="review-text">
+                            <p>As a graphic designer, I needed a powerful laptop with a color-accurate display, and the XPS 15 delivers on both fronts. The OLED screen is gorgeous, and the performance is snappy even with Adobe Creative Cloud apps.</p>
+                            <p>My only complaint is that it can get quite hot when doing intensive tasks, and the fans can be noisy. Otherwise, it's a fantastic machine that I'd highly recommend to other creative professionals.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="review">
+                    <div class="review-avatar">M</div>
+                    <div class="review-content">
+                        <div class="review-header">
+                            <div class="review-author">Michael Chen</div>
+                            <div class="review-date">2 weeks ago</div>
+                        </div>
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <div class="review-text">
+                            <p>I've been using the Dell XPS 15 for about two weeks now, and I'm very impressed. The build quality is top-notch, and the performance is excellent for both work and gaming.</p>
+                            <p>The RTX 3050 Ti handles most games at medium to high settings, which is great for a laptop that's not primarily designed for gaming. The speakers are surprisingly good for a laptop, and the webcam quality is decent despite its small size.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="related-products">
+            <h2>Related Products</h2>
+            <div class="related-products-grid" id="related-products">
+                <!-- Related products will be added dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TechStore. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Example product data based on the provided JSON structure
+            const product = {
+                _id: "67de059601850c8a5c10fe51",
+                name: "Laptop Dell XPS 15",
+                brand: "Dell",
+                model: "XPS 15 9530",
+                price: "29000000",
+                discount_percent: "5",
+                stock_quantity: "10",
+                short_description: "Premium ultrabook with stunning display and powerful performance",
+                status: "available",
+                specs: {
+                    cpu: "Intel Core i7-13700H",
+                    ram: "16GB DDR5",
+                    storage: "512GB NVMe SSD",
+                    display: "15.6 inch 4K OLED",
+                    gpu: "NVIDIA RTX 4060 6GB",
+                    battery: "86Wh",
+                    os: "Windows 11 Pro",
+                    ports: ["USB-C"]
+                },
+                category_ids: ["67ddfd25c729a5032d685992"],
+                highlights: ["Premium build quality", "High-performance components", "Stunning 4K OLED display"],
+                product_info: [
+                    {
+                        title: "Design",
+                        content: "Sleek aluminum design with carbon fiber palm rest"
+                    },
+                    {
+                        title: "Performance",
+                        content: "High-performance laptop for professionals and content creators"
+                    }
+                ],
+                variant_specs: [
+                    {
+                        name: "High Performance",
+                        specs: {
+                            cpu: "Intel Core i9",
+                            ram: "32GB DDR5",
+                            storage: "1TB NVMe SSD",
+                            display: "15.6 inch 4K OLED Touch",
+                            gpu: "NVIDIA RTX 4070 8GB",
+                            battery: "86Wh",
+                            os: "Windows 11 Pro",
+                            ports: ["Thunderbolt 4", "USB-C", "HDMI", "SD Card Reader"]
+                        },
+                        price: 35000000,
+                        discount_percent: 0
+                    },
+                    {
+                        name: "Standard",
+                        specs: {
+                            cpu: "Intel Core i7-13700H",
+                            ram: "16GB DDR5",
+                            storage: "512GB NVMe SSD",
+                            display: "15.6 inch 4K OLED",
+                            gpu: "NVIDIA RTX 4060 6GB",
+                            battery: "86Wh",
+                            os: "Windows 11 Pro",
+                            ports: ["Thunderbolt 4", "USB-C", "HDMI", "SD Card Reader"]
+                        },
+                        price: 29000000,
+                        discount_percent: 5
+                    }
+                ],
+                colors: [
+                    {
+                        name: "Grey",
+                        code: "#b1a0a0",
+                        price_adjustment: 150000,
+                        discount_adjustment: 0,
+                        images: []
+                    },
+                    {
+                        name: "Black",
+                        code: "#000000",
+                        price_adjustment: 0,
+                        discount_adjustment: 0,
+                        images: []
+                    },
+                    {
+                        name: "Red",
+                        code: "#de0d0d",
+                        price_adjustment: 50000,
+                        discount_adjustment: 0,
+                        images: []
+                    }
+                ],
+                discount_price: 27550000,
+                image_filenames: [
+                    "dell-xps15-1.webp",
+                    "dell-xps15-2.webp",
+                    "dell-xps15-3.webp",
+                    "dell-xps15-4.webp"
+                ],
+                video_filenames: [
+                    "dell-xps15-video1.mp4",
+                    "dell-xps15-video2.mp4"
+                ]
+            };
+            
+            // Update product details
+            document.getElementById('product-breadcrumb-name').textContent = product.name;
+            document.getElementById('product-category').textContent = "Premium Laptop";
+            document.getElementById('product-title').textContent = product.name;
+            
+            // Format price with commas for better readability (e.g., 29,000,000)
+            const formatPrice = (price) => {
+                return parseInt(price).toLocaleString();
+            };
+            
+            // Calculate and display discount
+            const basePrice = parseInt(product.price);
+            const discountPercent = parseInt(product.discount_percent);
+            const discountPrice = product.discount_price;
+            
+            const discountDisplay = discountPercent > 0 ? 
+                `<div class="original-price">₫${formatPrice(basePrice)}</div>
+                 <div class="discount-badge">-${discountPercent}%</div>` : '';
+            
+            document.getElementById('product-price').innerHTML = `₫${formatPrice(discountPrice)} ${discountDisplay}`;
+            document.getElementById('product-description').textContent = product.short_description;
+            
+            // Set main product image
+            document.getElementById('main-product-image').style.backgroundImage = `url('images/${product.image_filenames[0]}')`;
+            
+            // Create thumbnails for all images
+            const thumbnailContainer = document.getElementById('thumbnail-container');
+            thumbnailContainer.innerHTML = '';
+            
+            product.image_filenames.forEach((image, index) => {
+                const thumb = document.createElement('div');
+                thumb.classList.add('thumbnail');
+                if (index === 0) thumb.classList.add('active');
+                thumb.style.backgroundImage = `url('images/${image}')`;
+                thumb.dataset.image = `images/${image}`;
+                thumbnailContainer.appendChild(thumb);
+            });
+            
+            // Update specifications table
+            const specTable = document.querySelector('.spec-table');
+            specTable.innerHTML = `
+                <tr>
+                    <td>Processor</td>
+                    <td>${product.specs.cpu}</td>
+                </tr>
+                <tr>
+                    <td>RAM</td>
+                    <td>${product.specs.ram}</td>
+                </tr>
+                <tr>
+                    <td>Storage</td>
+                    <td>${product.specs.storage}</td>
+                </tr>
+                <tr>
+                    <td>Display</td>
+                    <td>${product.specs.display}</td>
+                </tr>
+                <tr>
+                    <td>Graphics</td>
+                    <td>${product.specs.gpu}</td>
+                </tr>
+            `;
+            
+            // Add variant selection
+            const productInfo = document.querySelector('.product-info');
+            const variantSelector = document.createElement('div');
+            variantSelector.classList.add('variant-selector');
+            variantSelector.innerHTML = `
+                <h3>Configuration Options</h3>
+                <div class="variant-options">
+                    ${product.variant_specs.map((variant, index) => `
+                        <div class="variant-option ${index === 1 ? 'active' : ''}" data-variant-index="${index}">
+                            <div class="variant-name">${variant.name}</div>
+                            <div class="variant-price">₫${formatPrice(variant.price - (variant.price * variant.discount_percent / 100))}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Add color selection
+            const colorSelector = document.createElement('div');
+            colorSelector.classList.add('color-selector');
+            colorSelector.innerHTML = `
+                <h3>Color Options</h3>
+                <div class="color-options">
+                    ${product.colors.map((color, index) => `
+                        <div class="color-option ${index === 0 ? 'active' : ''}" 
+                             data-color-index="${index}" 
+                             data-color-name="${color.name}"
+                             data-price-adjustment="${color.price_adjustment}"
+                             style="background-color: ${color.code}">
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="selected-color-name">Selected: ${product.colors[0].name}</div>
+            `;
+            
+            // Insert variant and color selectors before quantity selector
+            const quantitySelector = document.querySelector('.quantity-selector');
+            productInfo.insertBefore(variantSelector, quantitySelector);
+            productInfo.insertBefore(colorSelector, quantitySelector);
+            
+            // Add event listeners to thumbnails
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById('main-product-image').style.backgroundImage = this.style.backgroundImage;
+                });
+            });
+            
+            // Add event listeners to variant options
+            const variantOptions = document.querySelectorAll('.variant-option');
+            variantOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    variantOptions.forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update specs based on selected variant
+                    const variantIndex = parseInt(this.dataset.variantIndex);
+                    const selectedVariant = product.variant_specs[variantIndex];
+                    
+                    // Update spec table
+                    specTable.innerHTML = `
+                        <tr>
+                            <td>Processor</td>
+                            <td>${selectedVariant.specs.cpu}</td>
+                        </tr>
+                        <tr>
+                            <td>RAM</td>
+                            <td>${selectedVariant.specs.ram}</td>
+                        </tr>
+                        <tr>
+                            <td>Storage</td>
+                            <td>${selectedVariant.specs.storage}</td>
+                        </tr>
+                        <tr>
+                            <td>Display</td>
+                            <td>${selectedVariant.specs.display}</td>
+                        </tr>
+                        <tr>
+                            <td>Graphics</td>
+                            <td>${selectedVariant.specs.gpu}</td>
+                        </tr>
+                    `;
+                    
+                    // Update price
+                    const variantPrice = selectedVariant.price;
+                    const variantDiscountPercent = selectedVariant.discount_percent;
+                    const variantDiscountPrice = variantPrice - (variantPrice * variantDiscountPercent / 100);
+                    
+                    const variantDiscountDisplay = variantDiscountPercent > 0 ? 
+                        `<div class="original-price">₫${formatPrice(variantPrice)}</div>
+                         <div class="discount-badge">-${variantDiscountPercent}%</div>` : '';
+                    
+                    document.getElementById('product-price').innerHTML = 
+                        `₫${formatPrice(variantDiscountPrice)} ${variantDiscountDisplay}`;
+                });
+            });
+            
+            // Add event listeners to color options
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    colorOptions.forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const colorName = this.dataset.colorName;
+                    document.querySelector('.selected-color-name').textContent = `Selected: ${colorName}`;
+                });
+            });
+            
+            // Update the description tab content
+            document.getElementById('description').innerHTML = `
+                <h3>Product Description</h3>
+                <p>${product.short_description}</p>
+                
+                <div class="product-highlights">
+                    <h4>Highlights</h4>
+                    <ul>
+                        ${product.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                ${product.product_info.map(info => `
+                    <div class="product-info-section">
+                        <h4>${info.title}</h4>
+                        <p>${info.content}</p>
+                    </div>
+                `).join('')}
+            `;
+            
+            // Update the specifications tab with full specs
+            document.getElementById('specifications').innerHTML = `
+                <h3>Technical Specifications</h3>
+                <div class="full-specs">
+                    <table>
+                        <tr>
+                            <th colspan="2">Product Information</th>
+                        </tr>
+                        <tr>
+                            <td>Brand</td>
+                            <td>${product.brand}</td>
+                        </tr>
+                        <tr>
+                            <td>Model</td>
+                            <td>${product.model}</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Performance</th>
+                        </tr>
+                        <tr>
+                            <td>Processor</td>
+                            <td>${product.specs.cpu}</td>
+                        </tr>
+                        <tr>
+                            <td>Graphics</td>
+                            <td>${product.specs.gpu}</td>
+                        </tr>
+                        <tr>
+                            <td>Memory</td>
+                            <td>${product.specs.ram}</td>
+                        </tr>
+                        <tr>
+                            <td>Storage</td>
+                            <td>${product.specs.storage}</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Display</th>
+                        </tr>
+                        <tr>
+                            <td>Screen</td>
+                            <td>${product.specs.display}</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Other</th>
+                        </tr>
+                        <tr>
+                            <td>Operating System</td>
+                            <td>${product.specs.os}</td>
+                        </tr>
+                        <tr>
+                            <td>Battery</td>
+                            <td>${product.specs.battery}</td>
+                        </tr>
+                        <tr>
+                            <td>Ports</td>
+                            <td>${product.specs.ports.join(', ')}</td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+            
+            // Add video section if videos are available
+            if (product.video_filenames && product.video_filenames.length > 0) {
+                const videoSection = document.createElement('div');
+                videoSection.classList.add('product-videos');
+                videoSection.innerHTML = `
+                    <h3>Product Videos</h3>
+                    <div class="video-container">
+                        ${product.video_filenames.map(video => `
+                            <div class="product-video">
+                                <video controls>
+                                    <source src="videos/${video}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                // Insert after tabs
+                const tabsSection = document.querySelector('.tabs');
+                tabsSection.parentNode.insertBefore(videoSection, tabsSection.nextSibling);
+            }
+            
+            // Handle add to cart
+            document.getElementById('detail-add-to-cart').addEventListener('click', () => {
+                const quantity = parseInt(document.querySelector('.quantity-value').value);
+                const selectedVariantIndex = document.querySelector('.variant-option.active').dataset.variantIndex;
+                const selectedVariant = product.variant_specs[selectedVariantIndex];
+                const selectedColorIndex = document.querySelector('.color-option.active').dataset.colorIndex;
+                const selectedColor = product.colors[selectedColorIndex];
+                
+                // Calculate final price with variant and color adjustments
+                const variantPrice = selectedVariant.price;
+                const variantDiscountPercent = selectedVariant.discount_percent;
+                const colorPriceAdjustment = parseInt(selectedColor.price_adjustment);
+                
+                const finalPrice = (variantPrice - (variantPrice * variantDiscountPercent / 100)) + colorPriceAdjustment;
+                
+                // Create cart item
+                const cartItem = {
+                    id: product._id,
+                    title: product.name,
+                    variant: selectedVariant.name,
+                    color: selectedColor.name,
+                    price: finalPrice,
+                    image: `images/${product.image_filenames[0]}`,
+                    quantity: quantity
+                };
+                
+                // Check if similar item is already in cart
+                const existingItemIndex = cart.findIndex(item => 
+                    item.id === cartItem.id && 
+                    item.variant === cartItem.variant && 
+                    item.color === cartItem.color
+                );
+                
+                if (existingItemIndex >= 0) {
+                    cart[existingItemIndex].quantity += quantity;
+                } else {
+                    cart.push(cartItem);
+                }
+                
+                // Update cart and localStorage
+                updateCart();
+                saveCart();
+                showNotification(`${product.name} (${selectedVariant.name}, ${selectedColor.name}) added to cart`);
+            });
+            
+            // Rest of the code (tabs handling, etc.) remains unchanged
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    tabLinks.forEach(tab => tab.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

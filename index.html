@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Laptop Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>TechStore</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div class="cart-total">
+            <h3>Total: $<span id="cart-total-price">0</span></h3>
+        </div>
+        <button id="checkout-btn">Checkout</button>
+    </div>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Find Your Perfect Laptop</h2>
+                <p>High-performance laptops for work, gaming, and everyday use</p>
+                <a href="products.html" class="btn">Shop Now</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="products">
+        <div class="container">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="product-grid" id="featured-grid">
+                <!-- Featured products will be loaded dynamically via JS -->
+            </div>
+            <div class="text-center" style="margin-top: 30px;">
+                <a href="products.html" class="btn">View All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">About Us</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>TechStore is your one-stop shop for high-quality laptops from all major brands. We provide competitive prices and exceptional customer service to ensure you find the perfect laptop for your needs.</p>
+                    <p>We believe in offering a hassle-free shopping experience which is why we don't require account creation to shop with us.</p>
+                </div>
+                <div class="about-image">
+                    <img src="images/store.jpg" alt="TechStore showroom">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>123 Tech Street, Digital City</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <p>+1 234 567 8900</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>info@techstore.com</p>
+                    </div>
+                </div>
+                <form class="contact-form">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TechStore. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Home page specific script for featured products
+        document.addEventListener('DOMContentLoaded', () => {
+            // Display only 4 featured products on the home page
+            const featuredGrid = document.getElementById('featured-grid');
+            
+            // Get random products to feature (4 products)
+            const featuredProducts = [...products]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 4);
+            
+            featuredGrid.innerHTML = '';
+            
+            featuredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.classList.add('product-card');
+                
+                productCard.innerHTML = `
+                    <div class="product-image" style="background-image: url('${product.image}')"></div>
+                    <div class="product-info">
+                        <div class="product-category">${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</div>
+                        <h3 class="product-title">${product.title}</h3>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <button class="btn add-to-cart" data-id="${product.id}">Add to Cart</button>
+                    </div>
+                `;
+                
+                featuredGrid.appendChild(productCard);
+            });
+            
+            // Add event listeners to the "Add to Cart" buttons
+            const addToCartButtons = document.querySelectorAll('.add-to-cart');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', addToCart);
+            });
+        });
+    </script>
+</body>
+</html> 

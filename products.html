@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - TechStore</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .products-banner {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('images/hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .products-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(52, 152, 219, 0.3), rgba(41, 128, 185, 0.3));
+            z-index: 1;
+        }
+        
+        .products-banner h1 {
+            width: 100%;
+            font-size: 48px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .product-detail {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .product-search {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .product-search:focus-within {
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .product-search input {
+            width: 85%;
+            padding: 16px 25px;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .product-search button {
+            width: 15%;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .product-search button:hover {
+            background: #2980b9;
+        }
+
+        .product-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .product-filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .product-sort {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-right: 20px;
+        }
+        
+        .sort-label {
+            margin-right: 10px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .sort-select {
+            padding: 10px 35px 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            background-color: white;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            appearance: none;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .sort-select:focus {
+            border-color: #3498db;
+        }
+        
+        .sort-icon {
+            position: absolute;
+            right: 15px;
+            pointer-events: none;
+            color: #3498db;
+        }
+        
+        .filter-btn {
+            background: none;
+            border: 2px solid #3498db;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .filter-btn i {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: #3498db;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 35px;
+        }
+        
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-image {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.8), transparent);
+        }
+        
+        .product-category {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(52, 152, 219, 0.9);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+        
+        .product-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+        
+        .product-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: #3498db;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .product-price::before {
+            content: '$';
+            font-size: 16px;
+            margin-right: 2px;
+            font-weight: 600;
+        }
+        
+        .add-to-cart {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .add-to-cart:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .add-to-cart i {
+            font-size: 16px;
+        }
+        
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 0;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        
+        .no-results i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+        }
+        
+        @media (max-width: 992px) {
+            .product-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .product-sort {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .products-banner h1 {
+                font-size: 36px;
+            }
+            
+            .product-search input {
+                width: 80%;
+            }
+            
+            .product-search button {
+                width: 20%;
+            }
+            
+            .filter-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .products-banner {
+                height: 200px;
+            }
+            
+            .products-banner h1 {
+                font-size: 28px;
+            }
+        }
+
+        .product-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-title-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-title-link:hover .product-title {
+            color: #3498db;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .add-to-cart, .view-details {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+
+        .view-details {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            border: 2px solid #e0e0e0;
+        }
+
+        .view-details:hover {
+            background-color: #ecf0f1;
+            border-color: #bdc3c7;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            background-color: rgba(52, 152, 219, 0.9);
+            color: white;
+            border-radius: 5px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.3s;
+        }
+        
+        .notification.warning {
+            background-color: rgba(241, 196, 15, 0.9);
+            color: #333;
+        }
+        
+        .notification.error {
+            background-color: rgba(231, 76, 60, 0.9);
+        }
+        
+        .notification.success {
+            background-color: rgba(46, 204, 113, 0.9);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>TechStore</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html" class="active">Products</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div class="cart-total">
+            <h3>Total: $<span id="cart-total-price">0</span></h3>
+        </div>
+        <button id="checkout-btn">Checkout</button>
+    </div>
+
+    <div class="products-banner">
+        <h1>Our Laptop Collection</h1>
+    </div>
+
+    <section class="products">
+        <div class="container">
+            <div class="product-search">
+                <input type="text" id="search-input" placeholder="Search for laptops by name, category, or specification...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="product-controls">
+                <div class="product-filter" id="category-filter">
+                    <!-- Category buttons will be loaded dynamically -->
+                    <button class="filter-btn active" data-filter="all"><i class="fas fa-laptop"></i> All</button>
+                </div>
+                
+                <div class="product-sort">
+                    <span class="sort-label">Sort by:</span>
+                    <select class="sort-select" id="sort-select">
+                        <option value="default">Default</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="name-asc">Name: A to Z</option>
+                        <option value="name-desc">Name: Z to A</option>
+                    </select>
+                    <i class="fas fa-chevron-down sort-icon"></i>
+                </div>
+            </div>
+            
+            <div class="product-grid">
+                <!-- Products will be loaded dynamically via JS -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TechStore. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Additional product page specific script
+        document.addEventListener('DOMContentLoaded', async () => {
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+            const sortSelect = document.getElementById('sort-select');
+            const categoryFilter = document.getElementById('category-filter');
+            const productGrid = document.querySelector('.product-grid');
+            
+            let currentCategory = 'all';
+            let currentSort = 'default';
+            let currentSearch = '';
+            
+            // Fetch categories and create filter buttons
+            async function initializeCategories() {
+                // Clear any existing category buttons (except All which is in the HTML)
+                categoryFilter.innerHTML = '';
+                
+                // Fetch categories from API
+                const categoryResult = await fetchCategories();
+                
+                // Show notification if using sample categories
+                if (categoryResult.usingSampleCategories) {
+                    showNotification('Using sample categories - API server is unavailable.', 'warning');
+                }
+                
+                // Create button for each category
+                categoryResult.categories.forEach(category => {
+                    const button = document.createElement('button');
+                    button.className = 'filter-btn' + (category.slug === 'all' ? ' active' : '');
+                    button.setAttribute('data-filter', category.slug);
+                    button.innerHTML = `<i class="fas ${category.icon}"></i> ${category.name}`;
+                    
+                    // Add click event for category filtering
+                    button.addEventListener('click', async () => {
+                        // Remove active class from all filter buttons
+                        document.querySelectorAll('.filter-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        
+                        // Add active class to clicked button
+                        button.classList.add('active');
+                        
+                        // Get filter value - ensure we use the proper ID format
+                        if (category.slug === 'all') {
+                            currentCategory = 'all';
+                        } else {
+                            // Use the actual category ID from the button
+                            currentCategory = category.id;
+                            console.log(`Selected category ID: ${currentCategory}`);
+                        }
+                        
+                        // Load products with new filter
+                        await loadProducts();
+                    });
+                    
+                    categoryFilter.appendChild(button);
+                });
+            }
+            
+            // Initialize categories
+            await initializeCategories();
+            
+            // Initialize products
+            await loadProducts();
+            
+            // Search functionality
+            async function searchProducts() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                currentSearch = searchTerm;
+                
+                await loadProducts();
+            }
+            
+            searchBtn.addEventListener('click', searchProducts);
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    searchProducts();
+                }
+            });
+            
+            // Sort functionality
+            sortSelect.addEventListener('change', async () => {
+                currentSort = sortSelect.value;
+                await loadProducts();
+            });
+            
+            // Function to load products with current filters
+            async function loadProducts() {
+                // Show loading state
+                productGrid.innerHTML = '<div class="no-results"><i class="fas fa-spinner fa-spin"></i><p>Loading products...</p></div>';
+                
+                console.log(`Loading products with category: ${currentCategory}, sort: ${currentSort}, search: ${currentSearch}`);
+                
+                // Fetch products with current filters
+                const result = await fetchProducts({
+                    query: currentSearch,
+                    category: currentCategory,
+                    sort: currentSort
+                });
+                
+                // Display notification if using sample data
+                if (result.usingSampleData) {
+                    showNotification('Using sample data - API server is unavailable.', 'warning');
+                }
+                
+                // If no products were found for this category
+                if (result.noProductsFound || result.products.length === 0) {
+                    if (currentCategory !== 'all') {
+                        showNotification(`No products found in category ID: ${currentCategory}. This may indicate a database misconfiguration.`, 'warning');
+                        console.warn(`No products found for category ID: ${currentCategory}`);
+                    }
+                }
+                
+                // Display the products
+                displayFilteredProducts(result.products);
+            }
+            
+            // Helper function to display filtered products
+            function displayFilteredProducts(filteredProducts) {
+                productGrid.innerHTML = '';
+                
+                if (filteredProducts.length === 0) {
+                    productGrid.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <p>No products match your search criteria.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                filteredProducts.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.classList.add('product-card');
+                    
+                    productCard.innerHTML = `
+                        <a href="product-detail.html?id=${product.id}" class="product-link">
+                            <div class="product-image" style="background-image: url('${product.image}')">
+                                <div class="product-category">${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</div>
+                            </div>
+                        </a>
+                        <div class="product-info">
+                            <a href="product-detail.html?id=${product.id}" class="product-title-link">
+                                <h3 class="product-title">${product.title}</h3>
+                            </a>
+                            <div class="product-detail">${product.description}</div>
+                            <div class="product-price">${product.price.toFixed(2)}</div>
+                            <div class="product-actions">
+                                <button class="btn add-to-cart" data-id="${product.id}">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                                <a href="product-detail.html?id=${product.id}" class="btn view-details">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    productGrid.appendChild(productCard);
+                });
+                
+                // Add event listeners to the "Add to Cart" buttons
+                const addToCartButtons = document.querySelectorAll('.add-to-cart');
+                addToCartButtons.forEach(button => {
+                    button.addEventListener('click', addToCart);
+                });
+            }
+            
+            // Helper function to show notifications
+            function showNotification(message, type = 'info') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.style.display = 'block';
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 5000); // Hide after 5 seconds
+            }
+            
+            // Override the global displayProducts function to use our filtered products
+            window.displayProducts = async function(category) {
+                currentCategory = category;
+                await loadProducts();
+            };
+        });
+    </script>
+</body>
+</html> 

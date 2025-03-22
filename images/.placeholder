@@ -1,0 +1,18 @@
+This is a placeholder file to ensure the images directory exists.
+Real laptop images should be placed in this directory with the following names:
+- dell-xps15.jpg
+- macbook-pro.jpg
+- thinkpad-x1.jpg
+- hp-spectre.jpg
+- asus-rog.jpg
+- acer-predator.jpg
+- surface-laptop.jpg
+- razer-blade.jpg
+- dell-latitude.jpg
+- hp-elitebook.jpg
+- lenovo-legion.jpg
+- lg-gram.jpg
+- hero-bg.jpg
+- store.jpg
+
+The website will use placeholder images if these files are not found. 
