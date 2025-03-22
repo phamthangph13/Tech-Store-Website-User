@@ -28,38 +28,89 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             // Get form values
-            const name = document.getElementById('contact-name').value;
-            const email = document.getElementById('contact-email').value;
-            const subject = document.getElementById('contact-subject').value;
-            const message = document.getElementById('contact-message').value;
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('contact-email').value.trim();
+            const phone = document.getElementById('contact-phone').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
             
             // Form validation
             if (!name || !email || !subject || !message) {
-                showNotification('Please fill out all fields', 'error');
+                showNotification('Vui lòng điền đầy đủ các trường bắt buộc', 'error');
                 return;
             }
             
             // Email validation
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                showNotification('Please enter a valid email address', 'error');
+                showNotification('Vui lòng nhập địa chỉ email hợp lệ', 'error');
                 return;
             }
             
-            // Simulate form submission
-            showNotification('Sending your message...', 'info');
+            // Show sending notification
+            showNotification('Đang gửi tin nhắn của bạn...', 'info');
             
-            // Simulate API call with timeout
-            setTimeout(() => {
-                // In a real application, you would send the data to a server here
-                console.log('Form Data:', { name, email, subject, message });
+            // Prepare data for API call
+            const formData = {
+                name,
+                email,
+                phone,
+                subject,
+                message
+            };
+            
+            // Call the API using the same base URL as the product API
+            fetch('http://localhost:5000/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // Handle HTTP error status
+                    if (response.status === 429) {
+                        throw new Error('rate_limit_exceeded');
+                    }
+                    return response.json().then(data => {
+                        throw data;
+                    }).catch(e => {
+                        // If JSON parsing fails, throw a generic error with the status
+                        throw new Error(`Server error: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    showNotification(data.message || 'Tin nhắn của bạn đã được gửi thành công!', 'success');
+                    
+                    // Reset form
+                    contactForm.reset();
+                } else {
+                    // Handle API logical error
+                    throw data;
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting form:', error);
                 
-                // Show success message
-                showNotification('Your message has been sent successfully! We will contact you soon.', 'success');
-                
-                // Reset form
-                contactForm.reset();
-            }, 1500);
+                // Handle different error types
+                if (error === 'rate_limit_exceeded' || (error.error && error.error === 'rate_limit_exceeded')) {
+                    showNotification('Quá nhiều yêu cầu. Vui lòng thử lại sau.', 'error');
+                } else if (error.error && error.error === 'validation_error') {
+                    // Handle validation errors
+                    const fieldErrors = error.fields;
+                    const firstError = Object.values(fieldErrors)[0];
+                    showNotification(firstError || 'Vui lòng kiểm tra lại thông tin đã nhập', 'error');
+                } else if (error.error && error.error === 'server_error') {
+                    showNotification(error.message || 'Đã xảy ra lỗi khi gửi tin nhắn. Vui lòng thử lại sau.', 'error');
+                } else {
+                    showNotification('Đã xảy ra lỗi khi gửi tin nhắn. Vui lòng thử lại sau.', 'error');
+                }
+            });
         });
     }
     
@@ -67,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const mapContainer = document.querySelector('.map-container');
     if (mapContainer) {
         // Add any map-specific interactions here if needed
-        // For example, you could add a click handler to show a larger map
         mapContainer.addEventListener('click', () => {
             console.log('Map clicked');
         });
