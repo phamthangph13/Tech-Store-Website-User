@@ -923,4 +923,105 @@ footer {
     .payment-method {
         min-width: 100%;
     }
+}
+
+/* Location Dropdown Styles */
+select#province,
+select#district,
+select#ward {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 15px;
+    color: #333;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+select#province:focus,
+select#district:focus,
+select#ward:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+select#province option,
+select#district option,
+select#ward option {
+    padding: 10px;
+}
+
+select#province:disabled,
+select#district:disabled,
+select#ward:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Checkout Form Styles Enhancement */
+.checkout-content {
+    padding: 30px;
+}
+
+.checkout-form h3 {
+    margin: 30px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.checkout-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+.checkout-actions button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+#place-order-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+}
+
+#place-order-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+#cancel-checkout {
+    background-color: white;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+#cancel-checkout:hover {
+    border-color: #ccc;
+    background-color: #f9f9f9;
 } 

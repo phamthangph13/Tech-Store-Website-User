@@ -528,8 +528,22 @@
                         <textarea id="address" required rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" required>
+                        <label for="province">Tỉnh/Thành phố</label>
+                        <select id="province" required>
+                            <option value="">Chọn Tỉnh/Thành phố</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="district">Quận/Huyện</label>
+                        <select id="district" required disabled>
+                            <option value="">Chọn Quận/Huyện</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ward">Phường/Xã</label>
+                        <select id="ward" required disabled>
+                            <option value="">Chọn Phường/Xã</option>
+                        </select>
                     </div>
                     
                     <h3>Payment Method</h3>
@@ -610,258 +624,10 @@
 
     <div id="notification" class="notification"></div>
 
-    <script src="js/app.js"></script>
+    <!-- Scripts -->
     <script src="js/products.js"></script>
-    <script>
-        // Additional product page specific script
-        document.addEventListener('DOMContentLoaded', async () => {
-            const searchInput = document.getElementById('search-input');
-            const searchBtn = document.getElementById('search-btn');
-            const sortSelect = document.getElementById('sort-select');
-            const categoryFilter = document.getElementById('category-filter');
-            const productGrid = document.querySelector('.product-grid');
-            
-            let currentCategory = 'all';
-            let currentSort = 'default';
-            let currentSearch = '';
-            
-            // Fetch categories and create filter buttons
-            async function initializeCategories() {
-                // Clear any existing category buttons (except All which is in the HTML)
-                categoryFilter.innerHTML = '';
-                
-                // Fetch categories from API
-                const categoryResult = await fetchCategories();
-                
-                // Show notification if using sample categories
-                if (categoryResult.usingSampleCategories) {
-                    createNotification('Using sample categories - API server is unavailable.', 'warning');
-                }
-                
-                // Create button for each category
-                categoryResult.categories.forEach(category => {
-                    const button = document.createElement('button');
-                    button.className = 'filter-btn' + (category.slug === 'all' ? ' active' : '');
-                    button.setAttribute('data-filter', category.slug);
-                    button.innerHTML = `<i class="fas ${category.icon}"></i> ${category.name}`;
-                    
-                    // Add click event for category filtering
-                    button.addEventListener('click', async () => {
-                        // Remove active class from all filter buttons
-                        document.querySelectorAll('.filter-btn').forEach(btn => {
-                            btn.classList.remove('active');
-                        });
-                        
-                        // Add active class to clicked button
-                        button.classList.add('active');
-                        
-                        // Get filter value - ensure we use the proper ID format
-                        if (category.slug === 'all') {
-                            currentCategory = 'all';
-                        } else {
-                            // Use the actual category ID from the button
-                            currentCategory = category.id;
-                            console.log(`Selected category ID: ${currentCategory}`);
-                        }
-                        
-                        // Load products with new filter
-                        await loadProducts();
-                    });
-                    
-                    categoryFilter.appendChild(button);
-                });
-            }
-            
-            // Initialize categories
-            await initializeCategories();
-            
-            // Initialize products
-            await loadProducts();
-            
-            // Search functionality
-            async function searchProducts() {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                currentSearch = searchTerm;
-                
-                await loadProducts();
-            }
-            
-            searchBtn.addEventListener('click', searchProducts);
-            searchInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') {
-                    searchProducts();
-                }
-            });
-            
-            // Sort functionality
-            sortSelect.addEventListener('change', async () => {
-                currentSort = sortSelect.value;
-                await loadProducts();
-            });
-            
-            // Function to load products with current filters
-            async function loadProducts() {
-                // Show loading state
-                productGrid.innerHTML = '<div class="no-results"><i class="fas fa-spinner fa-spin"></i><p>Loading products...</p></div>';
-                
-                console.log(`Loading products with category: ${currentCategory}, sort: ${currentSort}, search: ${currentSearch}`);
-                
-                // Fetch products with current filters
-                const result = await fetchProducts({
-                    query: currentSearch,
-                    category: currentCategory,
-                    sort: currentSort
-                });
-                
-                // Display notification if using sample data
-                if (result.usingSampleData) {
-                    createNotification('Using sample data - API server is unavailable.', 'warning');
-                }
-                
-                // If no products were found for this category
-                if (result.noProductsFound || result.products.length === 0) {
-                    if (currentCategory !== 'all') {
-                        createNotification(`No products found in category ID: ${currentCategory}. This may indicate a database misconfiguration.`, 'warning');
-                        console.warn(`No products found for category ID: ${currentCategory}`);
-                    }
-                }
-                
-                // Display the products
-                displayFilteredProducts(result.products);
-            }
-            
-            // Helper function to display filtered products
-            function displayFilteredProducts(filteredProducts) {
-                productGrid.innerHTML = '';
-                
-                if (filteredProducts.length === 0) {
-                    productGrid.innerHTML = `
-                        <div class="no-results">
-                            <i class="fas fa-search"></i>
-                            <p>No products match your search criteria.</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                filteredProducts.forEach(product => {
-                    const productCard = document.createElement('div');
-                    productCard.classList.add('product-card');
-                    
-                    // Calculate prices in VND
-                    const originalPrice = product.price;
-                    const discountPercent = product.discount_percent || 0;
-                    const promotionalPrice = product.discount_price || originalPrice;
-                    
-                    // Format prices with VND
-                    const formattedOriginalPrice = parseInt(originalPrice).toLocaleString('vi-VN');
-                    const formattedPromotionalPrice = parseInt(promotionalPrice).toLocaleString('vi-VN');
-                    
-                    // Create price HTML based on whether there's a discount
-                    let priceHTML = '';
-                    if (discountPercent > 0) {
-                        priceHTML = `
-                            <div class="product-price">
-                                <div class="original-price">${formattedOriginalPrice} ₫</div>
-                                <div class="promotional-price">
-                                    ${formattedPromotionalPrice} ₫
-                                    <span class="discount-badge">-${discountPercent}%</span>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        priceHTML = `
-                            <div class="product-price">
-                                <div class="promotional-price">${formattedOriginalPrice} ₫</div>
-                            </div>
-                        `;
-                    }
-                    
-                    productCard.innerHTML = `
-                        <a href="product-detail.html?id=${product.id}" class="product-link">
-                            <div class="product-image" style="background-image: url('${product.image}')">
-                                <div class="product-category">${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</div>
-                            </div>
-                        </a>
-                        <div class="product-info">
-                            <a href="product-detail.html?id=${product.id}" class="product-title-link">
-                                <h3 class="product-title">${product.title}</h3>
-                            </a>
-                            <div class="product-detail">${product.description}</div>
-                            ${priceHTML}
-                            <div class="product-actions">
-                                <button class="btn add-to-cart" data-id="${product.id}">
-                                    <i class="fas fa-shopping-cart"></i> Add to Cart
-                                </button>
-                                <a href="product-detail.html?id=${product.id}" class="btn view-details">
-                                    <i class="fas fa-eye"></i> View Details
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                    
-                    productGrid.appendChild(productCard);
-                });
-                
-                // Add event listeners to the "Add to Cart" buttons
-                const addToCartButtons = document.querySelectorAll('.add-to-cart');
-                addToCartButtons.forEach(button => {
-                    button.addEventListener('click', addToCart);
-                });
-            }
-            
-            // Function to add products to cart
-            function addToCart(event) {
-                const productId = event.currentTarget.getAttribute('data-id');
-                const product = products.find(p => String(p.id) === String(productId));
-                
-                if (product) {
-                    console.log(`Adding product to cart: ${product.title} (ID: ${product.id})`);
-                    
-                    // Call the global addToCart function from app.js if available
-                    if (typeof window.addToCart === 'function') {
-                        window.addToCart(event);
-                    } else {
-                        // Add product to cart manually if global function not available
-                        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                        
-                        // Check if product is already in cart
-                        const existingProduct = cart.find(item => String(item.id) === String(productId));
-                        
-                        if (existingProduct) {
-                            existingProduct.quantity += 1;
-                            createNotification(`Increased ${product.title} quantity in cart`, 'success');
-                        } else {
-                            cart.push({
-                                id: product.id,
-                                title: product.title,
-                                price: product.discount_price || product.price,
-                                image: product.image,
-                                quantity: 1
-                            });
-                            createNotification(`${product.title} added to cart`, 'success');
-                        }
-                        
-                        // Save cart to localStorage
-                        localStorage.setItem('cart', JSON.stringify(cart));
-                        
-                        // Update cart count
-                        const cartCount = document.getElementById('cart-count');
-                        const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
-                        cartCount.textContent = totalQuantity;
-                    }
-                } else {
-                    console.error(`Product with ID ${productId} not found!`);
-                    createNotification('Error adding product to cart', 'error');
-                }
-            }
-            
-            // Override the global displayProducts function to use our filtered products
-            window.displayProducts = async function(category) {
-                currentCategory = category;
-                await loadProducts();
-            };
-        });
-    </script>
+    <script src="js/app.js"></script>
+    <script src="js/fetch-debug.js"></script>
+    <script src="js/location-selector.js"></script>
 </body>
 </html> 

@@ -9,12 +9,27 @@ const cartCount = document.getElementById('cart-count');
 const cartTotalPrice = document.getElementById('cart-total-price');
 const checkoutBtn = document.getElementById('checkout-btn');
 const notification = document.getElementById('notification');
+const checkoutOverlay = document.getElementById('checkout-overlay');
+const checkoutForm = document.getElementById('checkout-form');
+const checkoutItemsContainer = document.querySelector('.checkout-items');
+const checkoutSubtotalEl = document.getElementById('checkout-subtotal');
+const checkoutShippingEl = document.getElementById('checkout-shipping');
+const checkoutTotalEl = document.getElementById('checkout-total');
+const cancelCheckoutBtn = document.getElementById('cancel-checkout');
+const closeCheckoutBtn = document.getElementById('close-checkout');
+const provinceSelect = document.getElementById('province');
+const districtSelect = document.getElementById('district');
+const wardSelect = document.getElementById('ward');
 
 // Cart array to store items
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
+    // Test console log to verify logging works
+    console.log('PAGE LOADED - CONSOLE LOGGING TEST');
+    console.log('Current cart in localStorage:', JSON.parse(localStorage.getItem('cart') || '[]'));
+    
     // Only try to display products if we're on a page with a product grid
     if (productGrid) {
         displayProducts('all');
@@ -39,6 +54,92 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterButtons && filterButtons.length > 0) {
         filterButtons.forEach(button => {
             button.addEventListener('click', filterProducts);
+        });
+    }
+    
+    // Set up checkout sheet event listeners
+    if (closeCheckoutBtn) {
+        closeCheckoutBtn.addEventListener('click', closeCheckoutSheet);
+    }
+    
+    if (cancelCheckoutBtn) {
+        cancelCheckoutBtn.addEventListener('click', closeCheckoutSheet);
+    }
+    
+    // Register checkout form submission handler
+    if (checkoutForm) {
+        checkoutForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get location data from selects
+            const provinceSelect = document.getElementById('province');
+            const districtSelect = document.getElementById('district');
+            // Get location data
+            const provinceName = provinceSelect.options[provinceSelect.selectedIndex]?.text || '';
+            const districtName = districtSelect.options[districtSelect.selectedIndex]?.text || '';
+            const wardName = wardSelect.options[wardSelect.selectedIndex]?.text || '';
+            
+            // Create full location string
+            const locationString = [wardName, districtName, provinceName].filter(Boolean).join(', ');
+            
+            // Get form data
+            const formData = {
+                fullName: document.getElementById('full-name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                location: {
+                    province: {
+                        code: provinceSelect.value,
+                        name: provinceName
+                    },
+                    district: {
+                        code: districtSelect.value,
+                        name: districtName
+                    },
+                    ward: {
+                        code: wardSelect.value,
+                        name: wardName
+                    },
+                    fullString: locationString
+                },
+                paymentMethod: document.querySelector('input[name="payment-method"]:checked').value,
+                items: cart.map(item => ({
+                    id: item.id,
+                    title: item.title,
+                    variant: item.variant,
+                    color: item.color,
+                    price: item.price,
+                    quantity: item.quantity
+                })),
+                subtotal: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
+                shipping: cart.reduce((total, item) => total + (item.price * item.quantity), 0) > 500000 ? 0 : 30000
+            };
+            
+            formData.total = formData.subtotal + formData.shipping;
+            
+            // In a real application, we would send this data to a server
+            console.log('Order submitted:', formData);
+            
+            // Show success message
+            showNotification('Thank you for your order! Order has been placed successfully.', 'success', 5000);
+            
+            // Clear cart
+            cart = [];
+            updateCart();
+            saveCart();
+            
+            // Close checkout sheet
+            closeCheckoutSheet();
+        });
+    }
+    
+    // Setup checkout overlay click event
+    if (checkoutOverlay) {
+        checkoutOverlay.addEventListener('click', (e) => {
+            if (e.target === checkoutOverlay) {
+                closeCheckoutSheet();
+            }
         });
     }
 });
@@ -144,14 +245,19 @@ filterButtons.forEach(button => {
     });
 });
 
-// Toggle cart sidebar
-cartIcon.addEventListener('click', () => {
-    cartSidebar.classList.add('open');
-});
+// Function to open cart sidebar
+function openCart() {
+    if (cartSidebar) {
+        cartSidebar.classList.add('open');
+    }
+}
 
-closeCartBtn.addEventListener('click', () => {
-    cartSidebar.classList.remove('open');
-});
+// Function to close cart sidebar
+function closeCart() {
+    if (cartSidebar) {
+        cartSidebar.classList.remove('open');
+    }
+}
 
 // Enhanced notification system
 function showNotification(message, type = 'success', duration = 3000) {
@@ -250,9 +356,33 @@ function addToCart(event) {
         showNotification(`${product.title} added to cart`, 'success');
     }
     
-    // Update cart and localStorage
+    // Save cart to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    // Update cart display
     updateCart();
-    saveCart();
+    
+    // Add console logging of cart contents
+    console.log('------- CART CONTENTS -------');
+    console.table(cart); // Shows structured table in console
+    
+    // Detailed log of each item
+    cart.forEach((item, index) => {
+        console.group(`Cart item #${index + 1} - ${item.title}`);
+        console.log('ID:', item.id);
+        console.log('Title:', item.title);
+        console.log('Variant:', item.variant);
+        console.log('Color:', item.color);
+        console.log('Price:', item.price);
+        console.log('Quantity:', item.quantity);
+        console.log('Original price:', item.original_price);
+        console.log('Discount percent:', item.discount_percent);
+        if (item.color_adjustment) {
+            console.log('Color price adjustment:', item.color_adjustment);
+        }
+        console.groupEnd();
+    });
+    console.log('----------------------------');
 }
 
 // Update cart display
@@ -422,29 +552,6 @@ if (checkoutBtn) {
     });
 }
 
-// DOM elements for checkout sheet
-const checkoutOverlay = document.getElementById('checkout-overlay');
-const closeCheckoutBtn = document.getElementById('close-checkout');
-const cancelCheckoutBtn = document.getElementById('cancel-checkout');
-const checkoutForm = document.getElementById('checkout-form');
-const checkoutItemsContainer = document.querySelector('.checkout-items');
-const checkoutSubtotalEl = document.getElementById('checkout-subtotal');
-const checkoutShippingEl = document.getElementById('checkout-shipping');
-const checkoutTotalEl = document.getElementById('checkout-total');
-
-// Set up checkout sheet event listeners
-if (closeCheckoutBtn) {
-    closeCheckoutBtn.addEventListener('click', closeCheckoutSheet);
-}
-
-if (cancelCheckoutBtn) {
-    cancelCheckoutBtn.addEventListener('click', closeCheckoutSheet);
-}
-
-if (checkoutForm) {
-    checkoutForm.addEventListener('submit', placeOrder);
-}
-
 // Open checkout sheet
 function openCheckoutSheet() {
     if (!checkoutOverlay) return;
@@ -527,52 +634,4 @@ function updateCheckoutSummary() {
     checkoutSubtotalEl.textContent = subtotal.toLocaleString('vi-VN');
     checkoutShippingEl.textContent = shipping.toLocaleString('vi-VN');
     checkoutTotalEl.textContent = total.toLocaleString('vi-VN');
-}
-
-// Handle checkout form submission
-checkoutForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    // Get form data
-    const formData = {
-        fullName: document.getElementById('full-name').value,
-        phone: document.getElementById('phone').value,
-        email: document.getElementById('email').value,
-        address: document.getElementById('address').value,
-        city: document.getElementById('city').value,
-        paymentMethod: document.querySelector('input[name="payment-method"]:checked').value,
-        items: cart.map(item => ({
-            id: item.id,
-            title: item.title,
-            variant: item.variant,
-            color: item.color,
-            price: item.price,
-            quantity: item.quantity
-        })),
-        subtotal: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
-        shipping: cart.reduce((total, item) => total + (item.price * item.quantity), 0) > 500000 ? 0 : 30000
-    };
-    
-    formData.total = formData.subtotal + formData.shipping;
-    
-    // In a real application, we would send this data to a server
-    console.log('Order submitted:', formData);
-    
-    // Show success message
-    showNotification('Thank you for your order! Order has been placed successfully.', 'success', 5000);
-    
-    // Clear cart
-    cart = [];
-    updateCart();
-    saveCart();
-    
-    // Close checkout sheet
-    closeCheckoutSheet();
-});
-
-// Close checkout when clicking outside the sheet
-checkoutOverlay.addEventListener('click', (e) => {
-    if (e.target === checkoutOverlay) {
-        closeCheckoutSheet();
-    }
-}); 
+} 

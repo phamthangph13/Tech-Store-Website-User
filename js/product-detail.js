@@ -591,6 +591,28 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('cart', JSON.stringify(cart));
         console.log('Cart saved to localStorage:', cart);
         
+        // Log detailed cart contents
+        console.log('------- CART CONTENTS FROM DETAIL PAGE -------');
+        console.table(cart); // Shows cart items in table format
+        
+        // Detailed log of each item
+        cart.forEach((item, index) => {
+            console.group(`Cart item #${index + 1} - ${item.title}`);
+            console.log('ID:', item.id);
+            console.log('Title:', item.title);
+            console.log('Variant:', item.variant);
+            console.log('Color:', item.color);
+            console.log('Price:', item.price);
+            console.log('Quantity:', item.quantity);
+            console.log('Original price:', item.original_price || 'N/A');
+            console.log('Discount percent:', item.discount_percent || 0);
+            if (item.color_adjustment) {
+                console.log('Color price adjustment:', item.color_adjustment);
+            }
+            console.groupEnd();
+        });
+        console.log('-------------------------------------------');
+        
         // Update cart count in header
         updateCartCount(cart.reduce((total, item) => total + item.quantity, 0));
     }
